@@ -10,6 +10,7 @@ export default function LockInput({
   value,
   onChangeText,
   iconColor = '#09354B',
+  keyboardType = 'default',
 }) {
   const [showPassword, setShowPassword] = useState(false);
   function handleShowPassword() {

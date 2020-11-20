@@ -1,12 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {MaterialIndicator} from 'react-native-indicators';
-import {Screen, ArrowBack, SubsectionTitle, Center} from '../../../components';
+import {
+  Screen,
+  ArrowBack,
+  SubsectionTitle,
+  Center,
+  Card,
+} from '../../../components';
 import api from '../../../services/api';
 
 export default function PaymentMethods({route, navigation}) {
   const {customer} = route.params;
-  const [payment, setPayment] = useState(false);
+  const [payment, setPayment] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
 
@@ -26,7 +32,7 @@ export default function PaymentMethods({route, navigation}) {
   }, [route, refresh, customer.id]);
 
   const handleAddPay = () => {
-    navigation.navigate('AddPay');
+    navigation.navigate('AddPay', {customer, returnRoute: 'PaymentMethods'});
   };
 
   return (
@@ -44,9 +50,20 @@ export default function PaymentMethods({route, navigation}) {
       ) : (
         <View style={styles.content}>
           <Text style={styles.cardsTxt}>Seus cartões</Text>
-          <Text style={styles.emptyTxt}>
-            Você ainda não possui cartões. Adicione um para vêlo aqui.
-          </Text>
+          {payment.length > 0 ? (
+            <View style={styles.cards}>
+              {payment.map((pay, index) => (
+                <Card
+                  card={pay}
+                  style={index === payment.length - 1 ? styles.lastCard : {}}
+                />
+              ))}
+            </View>
+          ) : (
+            <Text style={styles.emptyTxt}>
+              Você ainda não possui cartões. Adicione um para vêlo aqui.
+            </Text>
+          )}
           <TouchableOpacity style={styles.btn} onPress={handleAddPay}>
             <Text style={styles.btnTxt}>Adicionar cartão</Text>
           </TouchableOpacity>
@@ -78,5 +95,12 @@ const styles = StyleSheet.create({
   },
   btnTxt: {
     color: '#00B2A9',
+  },
+  cards: {
+    marginTop: 15,
+  },
+  lastCard: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#f1f1f1',
   },
 });

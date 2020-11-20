@@ -13,17 +13,19 @@ const Input = ({
   secureTextEntry = false,
   autoCorrect = false,
   adormentPosition = 'start',
+  styleAdorment,
 }) => (
   <View style={styles.inputContainer}>
     <View style={styles.input}>
       {adorment && (
         <View
-          style={
-            adormentPosition === 'start'
+          style={{
+            ...(adormentPosition === 'start'
               ? styles.adormentStart
-              : styles.adormentEnd
-          }>
-          <Text style={styles.textAdorment}>{adorment}</Text>
+              : styles.adormentEnd),
+            ...styleAdorment,
+          }}>
+          {adorment}
         </View>
       )}
       <TextInput
@@ -88,9 +90,6 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 14,
     zIndex: 9,
-  },
-  textAdorment: {
-    fontSize: 18,
   },
   error: {
     marginLeft: 10,

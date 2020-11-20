@@ -10,27 +10,118 @@ import {
   LockInput,
   BottomAction,
   Button,
+  CardInput,
+  Alert,
 } from '../../components';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
-const LockIcon = () => (
-  <MaterialIcons name="lock-outline" size={24} color="#666666" />
-);
+import {maskCardExpiry, maskCnpj, maskCpf} from '../../utils';
+import api from '../../services/api';
+import mundipagg from '../../services/mundipagg';
 
 const {Row, Col} = Bootstrap;
 
-export default function AddPay({navigation}) {
+export default function AddPay({navigation, route}) {
+  const {customer, returnRoute} = route.params;
+  const walltet_customer_id = customer.customer_id; // Carteira do cliente na Mundipagg
+
   const [inputs, setInputs] = useState({
     card_number: '',
     expires: '',
     cvv: '',
     holder_name: '',
     document: '', // CPF/CNPJ
+    brand: '',
   });
+  function handleChange(e) {
+    const {name, value} = e;
+    setInputs((inputs) => ({...inputs, [name]: value}));
+  }
+  const toSubmit =
+    inputs.holder_name &&
+    inputs.expires &&
+    inputs.cvv &&
+    inputs.card_number &&
+    inputs.document;
+
   const [submitted, setSubmitted] = useState(false);
+  const [alert, setAlert] = useState({
+    open: false,
+    processing: false,
+    error: false,
+    success: false,
+  });
+  function handleAlert(e) {
+    const {name, value} = e;
+    setAlert((alert) => ({...alert, [name]: value}));
+  }
+
+  function handleSubmit() {
+    setSubmitted(true);
+    if (toSubmit) {
+      handleAlert({name: 'open', value: true});
+    }
+  }
+
+  async function handleAddInWallet() {
+    handleAlert({name: 'processing', value: true});
+
+    const newCard = {
+      number: inputs.card_number.split(/\s/).join(''),
+      holder_name: inputs.holder_name,
+      exp_month: Number(inputs.expires.split('/')[0]),
+      exp_year: Number(inputs.expires.split('/')[1]),
+      cvv: inputs.cvv,
+      brand: inputs.brand,
+    };
+
+    try {
+      const response = await mundipagg.post(
+        `/customers/${walltet_customer_id}/cards`,
+        newCard,
+      );
+
+      const card = response.data;
+      const data = {
+        card_id: card.id,
+        credit: true, // verificar se é necessário
+        debit: true, // verificar se é necessário
+      };
+
+      await api.post(`/customers/${customer.id}/cards`, data);
+      handleAlert({name: 'processing', value: false});
+      handleAlert({name: 'success', value: true});
+    } catch (err) {
+      console.log(err.response);
+      handleAlert({name: 'processing', value: false});
+      handleAlert({name: 'error', value: true});
+    }
+  }
+
+  function handleFinish() {
+    navigation.navigate(returnRoute, {loading: true});
+  }
+
   return (
     <>
       <Screen>
+        <Alert
+          open={alert.open}
+          title="Novo meio de pagamento"
+          message="Adicionar novo cartão?"
+          onConfirm={handleAddInWallet}
+          onCancel={() => {
+            handleAlert({name: 'open', value: false});
+          }}
+          processing={alert.processing}
+          processingTitle="Adicionando novo cartão..."
+          processingMessage="Por favor, aguarde!"
+          error={alert.error}
+          errorTitle="Erro"
+          errorMessage="Desculpe, não foi possível adicionar o cartão!"
+          success={alert.success}
+          successTitle="Cartão adicionado"
+          successMessage="O novo meio de pagamento foi adicionado com sucesso!"
+          onOk={handleFinish}
+        />
         <ScrollView>
           <ArrowBack
             onPress={() => {
@@ -42,19 +133,28 @@ export default function AddPay({navigation}) {
             <PayHelp />
           </View>
           <View style={styles.form}>
-            <Input
+            <CardInput
               value={inputs.card_number}
-              adorment={<LockIcon />}
-              adormentPosition="end"
               placeholder="Número do cartão"
+              onChangeText={(e, brand) => {
+                handleChange(e);
+                handleChange({name: 'brand', value: brand});
+              }}
               error={submitted && !inputs.card_number}
             />
             <Row>
               <Col style={styles.colLeft} size="5">
                 <Input
                   value={inputs.expires}
-                  placeholder="Validade"
-                  onChangeText={() => {}}
+                  placeholder="Validade MM/AA"
+                  onChangeText={(text) => {
+                    if (text.length <= 5 || text === '') {
+                      handleChange({
+                        name: 'expires',
+                        value: maskCardExpiry(text),
+                      });
+                    }
+                  }}
                   error={submitted && !inputs.expires}
                 />
               </Col>
@@ -62,7 +162,15 @@ export default function AddPay({navigation}) {
                 <LockInput
                   placeholder="CVV"
                   value={inputs.cvv}
-                  onChangeText={() => {}}
+                  keyboardType="numeric"
+                  onChangeText={(text) => {
+                    if (text.length <= 3 || text === '') {
+                      handleChange({
+                        name: 'cvv',
+                        value: text.replace(/\D/g, ''),
+                      });
+                    }
+                  }}
                   error={submitted && !inputs.cvv}
                   errorTxt="Preencha este campo"
                   iconColor="#666666"
@@ -72,31 +180,29 @@ export default function AddPay({navigation}) {
             <Input
               value={inputs.holder_name}
               placeholder="Nome do titular"
-              onChangeText={() => {}}
+              onChangeText={(text) => {
+                handleChange({name: 'holder_name', value: text});
+              }}
               error={submitted && !inputs.holder_name}
             />
             <Input
               value={inputs.document}
               placeholder="CPF/CNPJ"
-              onChangeText={() => {}}
+              onChangeText={(text) => {
+                if (text.length <= 18 || text === '') {
+                  handleChange({
+                    name: 'document',
+                    value: text.length <= 14 ? maskCpf(text) : maskCnpj(text),
+                  });
+                }
+              }}
               error={submitted && !inputs.document}
             />
           </View>
         </ScrollView>
       </Screen>
       <BottomAction>
-        <Button
-          text="Salvar"
-          disabled={
-            !(
-              inputs.holder_name &&
-              inputs.expires &&
-              inputs.cvv &&
-              inputs.card_number &&
-              inputs.document
-            )
-          }
-        />
+        <Button text="Salvar" onPress={handleSubmit} disabled={!toSubmit} />
       </BottomAction>
     </>
   );
