@@ -11,6 +11,8 @@ export default function LockInput({
   onChangeText,
   iconColor = '#09354B',
   keyboardType = 'default',
+  onHelp,
+  helper,
 }) {
   const [showPassword, setShowPassword] = useState(false);
   function handleShowPassword() {
@@ -38,8 +40,10 @@ export default function LockInput({
       secureTextEntry={!showPassword}
       adormentPosition="end"
       placeholder={placeholder}
+      helper={helper}
       error={error}
       errorTxt={errorTxt}
+      onHelp={onHelp}
       value={value}
       onChangeText={onChangeText}
     />

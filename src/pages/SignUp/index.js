@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -10,8 +10,9 @@ import {
   Inline,
   ArrowBack,
   Alert,
-  VerticalSpaceBetween,
+  SubsectionTitle,
   Screen,
+  BottomAction,
 } from '../../components';
 import api from '../../services/api';
 
@@ -76,155 +77,139 @@ export default function SignUp({navigation}) {
   }
 
   return (
-    <Screen>
-      <Alert
-        open={open}
-        title="Confirmar cadastro?"
-        message=""
-        onConfirm={handleSignUp}
-        onCancel={() => {
-          setOpen(false);
-        }}
-        processing={processing}
-        processingTitle="Aguarde um momento..."
-        processingMessage="Estamos criando sua conta!"
-        error={error}
-        errorTitle="Conta não criada!"
-        errorMessage="Não foi possível finalizar seu cadastro"
-        success={success}
-        successTitle="Cadastro efetuado!"
-        successMessage={
-          <Text>
-            Seu cadastro foi efetuado com sucesso. Para finalizar e ativar sua
-            conta, clique no link que foi enviado para o email{' '}
-            <Text style={styles.bold}>{inputs.email}</Text>!
-          </Text>
-        }
-        onOk={handleFinish}
-      />
-      <VerticalSpaceBetween
-        components={[
-          {
-            id: 1,
-            component: (
-              <View style={styles.submit}>
-                <View style={styles.header}>
-                  <ArrowBack
-                    onPress={() => {
-                      navigation.goBack();
-                    }}
-                  />
-                  <Text style={styles.title}>Cadastro</Text>
-                </View>
-                <View style={styles.inputs}>
-                  <Inline
-                    components={[
-                      {
-                        id: 1,
-                        component: (
-                          <Inline
-                            components={[
-                              {
-                                id: 1,
-                                component: (
-                                  <Radio
-                                    value="physical-entity"
-                                    selected={entityType}
-                                    onChange={handleEntityType}
-                                  />
-                                ),
-                              },
-                              {
-                                id: 2,
-                                component: (
-                                  <Text style={styles.personType}>
-                                    Pessoa Física
-                                  </Text>
-                                ),
-                              },
-                            ]}
-                          />
-                        ),
-                      },
-                      {
-                        id: 2,
-                        component: (
-                          <Inline
-                            components={[
-                              {
-                                id: 1,
-                                component: (
-                                  <Radio
-                                    value="legal-entity"
-                                    selected={entityType}
-                                    onChange={handleEntityType}
-                                  />
-                                ),
-                              },
-                              {
-                                id: 2,
-                                component: (
-                                  <Text style={styles.personType}>
-                                    Pessoa Jurídica
-                                  </Text>
-                                ),
-                              },
-                            ]}
-                          />
-                        ),
-                      },
-                    ]}
-                  />
-                  <View style={styles.in}>
-                    <Input
-                      placeholder="Seu nome completo"
-                      adorment={<UserIcon />}
-                      autoCapitalize="words"
-                      error={submitted && !inputs.name}
-                      errorTxt="Campo obrigatório"
-                      value={inputs.name}
-                      onChangeText={(text) => {
-                        handleChange({name: 'name', value: text});
-                      }}
+    <>
+      <Screen>
+        <Alert
+          open={open}
+          title="Confirmar cadastro?"
+          message=""
+          onConfirm={handleSignUp}
+          onCancel={() => {
+            setOpen(false);
+          }}
+          processing={processing}
+          processingTitle="Aguarde um momento..."
+          processingMessage="Estamos criando sua conta!"
+          error={error}
+          errorTitle="Conta não criada!"
+          errorMessage="Não foi possível finalizar seu cadastro"
+          success={success}
+          successTitle="Cadastro efetuado!"
+          successMessage={
+            <Text>
+              Seu cadastro foi efetuado com sucesso. Para finalizar e ativar sua
+              conta, clique no link que foi enviado para o email{' '}
+              <Text style={styles.bold}>{inputs.email}</Text>!
+            </Text>
+          }
+          onOk={handleFinish}
+        />
+        <ScrollView>
+          <ArrowBack
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+          <SubsectionTitle text="Criar conta" />
+          <View style={styles.inputs}>
+            <Inline
+              components={[
+                {
+                  id: 1,
+                  component: (
+                    <Inline
+                      components={[
+                        {
+                          id: 1,
+                          component: (
+                            <Radio
+                              value="physical-entity"
+                              selected={entityType}
+                              onChange={handleEntityType}
+                            />
+                          ),
+                        },
+                        {
+                          id: 2,
+                          component: (
+                            <Text style={styles.personType}>Pessoa Física</Text>
+                          ),
+                        },
+                      ]}
                     />
-                    <Input
-                      placeholder="Seu melhor email"
-                      adorment={<EmailIcon />}
-                      error={submitted && !inputs.email}
-                      errorTxt="Campo obrigatório"
-                      value={inputs.email}
-                      onChangeText={(text) => {
-                        handleChange({name: 'email', value: text});
-                      }}
+                  ),
+                },
+                {
+                  id: 2,
+                  component: (
+                    <Inline
+                      components={[
+                        {
+                          id: 1,
+                          component: (
+                            <Radio
+                              value="legal-entity"
+                              selected={entityType}
+                              onChange={handleEntityType}
+                            />
+                          ),
+                        },
+                        {
+                          id: 2,
+                          component: (
+                            <Text style={styles.personType}>
+                              Pessoa Jurídica
+                            </Text>
+                          ),
+                        },
+                      ]}
                     />
-                    <Input
-                      placeholder="Crie uma senha"
-                      adorment={<PassIcon />}
-                      error={submitted && !inputs.password}
-                      errorTxt="Campo obrigatório"
-                      value={inputs.password}
-                      keyboardType="email-address"
-                      secureTextEntry={true}
-                      onChangeText={(text) => {
-                        handleChange({name: 'password', value: text});
-                      }}
-                    />
-                  </View>
-                </View>
-              </View>
-            ),
-          },
-          {
-            id: 2,
-            component: (
-              <View style={styles.action}>
-                <Button text="Cadastrar-se" onPress={handleSubmit} />
-              </View>
-            ),
-          },
-        ]}
-      />
-    </Screen>
+                  ),
+                },
+              ]}
+            />
+            <View style={styles.in}>
+              <Input
+                placeholder="Seu nome completo"
+                adorment={<UserIcon />}
+                autoCapitalize="words"
+                error={submitted && !inputs.name}
+                errorTxt="Campo obrigatório"
+                value={inputs.name}
+                onChangeText={(text) => {
+                  handleChange({name: 'name', value: text});
+                }}
+              />
+              <Input
+                placeholder="Seu melhor email"
+                adorment={<EmailIcon />}
+                error={submitted && !inputs.email}
+                errorTxt="Campo obrigatório"
+                value={inputs.email}
+                onChangeText={(text) => {
+                  handleChange({name: 'email', value: text});
+                }}
+              />
+              <Input
+                placeholder="Crie uma senha"
+                adorment={<PassIcon />}
+                error={submitted && !inputs.password}
+                errorTxt="Campo obrigatório"
+                value={inputs.password}
+                keyboardType="email-address"
+                secureTextEntry={true}
+                onChangeText={(text) => {
+                  handleChange({name: 'password', value: text});
+                }}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      </Screen>
+      <BottomAction>
+        <Button text="Cadastrar-se" onPress={handleSubmit} />
+      </BottomAction>
+    </>
   );
 }
 

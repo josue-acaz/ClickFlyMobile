@@ -1,12 +1,29 @@
+import {format, parseISO} from 'date-fns';
+import {ptBR} from 'date-fns/locale';
 import {brands} from '../constants';
 
+export function capitalize(str, lower = false) {
+  return (lower ? str.toLowerCase() : str).replace(
+    /(?:^|\s|["'([{])+\S/g,
+    (match) => match.toUpperCase(),
+  );
+}
+
 export function rmCPF(value) {
-  const cpf = value.replace(/\D/g, '');
+  let cpf = '';
+  if (!value) {
+    return cpf;
+  }
+  cpf = value.replace(/\D/g, '');
   return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4');
 }
 
 export function rmDOB(value) {
-  const dob = `${value.split('T')[0].split('-')[2]}/${
+  let dob = '';
+  if (!value) {
+    return dob;
+  }
+  dob = `${value.split('T')[0].split('-')[2]}/${
     value.split('T')[0].split('-')[1]
   }/${value.split('T')[0].split('-')[0]}`;
   return dob;
@@ -120,4 +137,212 @@ export function getCardBrand(cardnumber) {
 // encontra a bandeira adequada do cartão
 export function findBrand(brand) {
   return brands.find((x) => x.label === brand);
+}
+
+export function maskCep(v) {
+  //Remove tudo o que não é dígito
+  v = v.replace(/\D/g, '');
+  //Coloca ponto entre o segundo e o terceiro dígitos
+  v = v.replace(/^(\d{5})(\d)/, '$1-$2');
+  return v;
+}
+
+// Define o limite máximo de um texto e coloca reticências ao final dele
+export function cutText(text = '', maxLength = 36) {
+  let cut = text;
+  if (text.length > maxLength) {
+    const getPart = text.slice(0, maxLength - 1);
+    cut = `${getPart.trim()}...`;
+  }
+
+  return cut;
+}
+
+export function getFormattedCustomerType(type) {
+  return type.replace('-', '_');
+}
+
+// Retorna um array com a cidade e o estado de um grupo de um voo
+export function getLegRoute(group) {
+  const origin = group.split(',')[0].split('-');
+  const destination = group.split(',')[1].split('-');
+  return {
+    origin: {
+      city: origin[0],
+      uf: origin[1],
+    },
+    destination: {
+      city: destination[0],
+      uf: destination[1],
+    },
+  };
+}
+
+export function getDepartureDate(date) {
+  const departureDate = parseISO(date);
+  const formattedDepartureDate = format(
+    departureDate,
+    "dd 'de' MMMM', às ' HH:mm",
+    {locale: ptBR},
+  );
+  return formattedDepartureDate;
+}
+
+export function getTime(date) {
+  const object = parseISO(date);
+  return format(object, 'HH:mm', {locale: ptBR});
+}
+
+export function currency(value) {
+  function normalizeNumber(number = 0.0) {
+    let stringBuffer = number.toString();
+    if (!stringBuffer.includes('.')) {
+      number = Number(stringBuffer).toFixed(2);
+    }
+
+    return number;
+  }
+
+  var v = normalizeNumber(value).toString().replace(/\D/g, '');
+  v = (v / 100).toFixed(2) + '';
+  v = v.replace('.', ',');
+  v = v.replace(/(\d)(\d{3})(\d{3}),/g, '$1.$2.$3,');
+  v = v.replace(/(\d)(\d{3}),/g, '$1.$2,');
+
+  return v;
+}
+
+export function getAerodromeName(aerodrome_name) {
+  const name = aerodrome_name.split('/')[1]
+    ? aerodrome_name.split('/')[1]
+    : aerodrome_name;
+  return capitalize(name, true);
+}
+
+export function calcSubtotal(price = 0.0, seats = 1) {
+  return price * seats;
+}
+
+// retorna os dados do usuário + customer
+export function mergeCustomer(customer) {
+  const {user, customer_cards, customer_friends, customer_id} = customer;
+  const data = {
+    ...user,
+    customer_cards,
+    customer_friends,
+    ...customer[customer.type.replace('-', '_')],
+    type: customer.type,
+    customer_id,
+  };
+
+  return data;
+}
+
+export function objectValidation(object) {
+  let isValid = true;
+  const arr = Object.keys(object);
+  arr.forEach((key) => {
+    if (!object[key]) {
+      isValid = false;
+    }
+  });
+
+  return isValid;
+}
+
+// Verifica se é necessário prover informações adicionais
+export function provideInformation(customer, paymentMethod) {
+  let id = 1;
+  let steps = [];
+  let isProvide = false;
+  const data = mergeCustomer(customer);
+  const {customer_cards, address} = customer;
+
+  switch (data.type) {
+    case 'physical-entity':
+      isProvide = !data.rg || !data.cpf || !data.phone || !data.dob;
+      break;
+    case 'legal-entity':
+      isProvide = !data.cnpj || !data.phone;
+      break;
+    default:
+      break;
+  }
+
+  // Informações básica do cliente
+  if (isProvide) {
+    steps.push({
+      id,
+      route: 'ProvideInformation',
+    });
+
+    id++;
+  }
+
+  // Meios de pagamento do cliente
+  if (paymentMethod === 'credit/debit' && customer_cards.length === 0) {
+    isProvide = true;
+    steps.push({
+      id,
+      route: 'AddPay',
+    });
+
+    id++;
+  }
+
+  // Endereço do cliente
+  if (paymentMethod === 'boleto' && !objectValidation(address)) {
+    isProvide = true;
+    steps.push({
+      id,
+      route: 'Address',
+    });
+
+    id++;
+  }
+
+  return {isProvide, steps};
+}
+
+// Valida as entradas dinamicas em formulários (Provide Informations)
+export function dynamicValidation(target, inputs, exclude = []) {
+  let isValid = true;
+  const arr = Object.keys(inputs);
+  arr.forEach((key) => {
+    const value = inputs[key];
+    if (
+      !target[key] &&
+      !exclude.find(function (exc) {
+        return exc === key;
+      })
+    ) {
+      if (!value) {
+        isValid = false;
+      }
+    }
+  });
+
+  return isValid;
+}
+
+export function removeFromArray(array = [], index = 0) {
+  return array.splice(index, 1);
+}
+
+export function getExpirationDate(exp_month, exp_year) {
+  return `${
+    exp_month.toString().length === 1 ? '0' + exp_month.toString() : exp_month
+  }/${exp_year.toString().split('0')[1]}`;
+}
+
+export function maskBarCode(number) {
+  let barcode = '';
+  if (!number) {
+    return barcode;
+  }
+  barcode = number.replace(/\D/g, '');
+  return barcode.replace(
+    /(\d{5})(\d{5})(\d{5})(\d{6})(\d{5})(\d{6})(\d{1})(\d{14})/g,
+    '$1.$2 $3.$4 $5.$6 $7 $8',
+  );
 }

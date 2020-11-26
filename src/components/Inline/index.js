@@ -1,11 +1,16 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 
-export default function Inline({components = []}) {
+export default function Inline({
+  components = [],
+  style,
+  justify = 'flex-start',
+  cmpStyle,
+}) {
   return (
-    <View style={styles.inline}>
+    <View style={{...styles.inline, justifyContent: justify, ...style}}>
       {components.map((cmp) => (
-        <View key={cmp.id} style={styles.cmp}>
+        <View key={cmp.id} style={{...styles.cmp, ...cmpStyle}}>
           {cmp.component}
         </View>
       ))}

@@ -3,11 +3,14 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {useAuth} from '../../contexts/auth';
 import NotLogged from '../NotLogged';
 import AddPay from '../AddPay';
+import AddFriend from '../AddFriend';
 
 // Inner Pages
 import Menu from './Menu';
 import PersonalInformation from './PersonalInformation';
 import PaymentMethods from './PaymentMethods';
+import Address from './Address';
+import Friends from './Friends';
 
 const AccountStack = createStackNavigator();
 const hideHeader = {headerShown: false};
@@ -38,6 +41,24 @@ export default function Account() {
       id: 4,
       name: 'AddPay',
       component: AddPay,
+      options: hideHeader,
+    },
+    {
+      id: 5,
+      name: 'Address',
+      component: Address,
+      options: hideHeader,
+    },
+    {
+      id: 6,
+      name: 'Friends',
+      component: Friends,
+      options: hideHeader,
+    },
+    {
+      id: 7,
+      name: 'AddFriend',
+      component: AddFriend,
       options: hideHeader,
     },
   ];

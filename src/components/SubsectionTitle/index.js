@@ -7,9 +7,9 @@ const SubsectionTitle = ({text = ''}) => (
 
 const styles = StyleSheet.create({
   subsection: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#444444',
+    color: '#222',
     marginTop: 15,
   },
 });

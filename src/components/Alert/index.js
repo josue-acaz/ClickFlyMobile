@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {Inline} from '../../components';
+import {Bootstrap} from '../../components';
 
 export default function Alert({
   open,
@@ -26,6 +26,7 @@ export default function Alert({
   successMessage,
   onOk,
 }) {
+  const {Row, Col} = Bootstrap;
   const OK = () => (
     <View style={styles.footer}>
       <TouchableOpacity style={styles.btn} onPress={onOk}>
@@ -42,30 +43,20 @@ export default function Alert({
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.message}>{message}</Text>
             <View style={styles.actions}>
-              <Inline
-                components={[
-                  {
-                    id: 1,
-                    component: (
-                      <TouchableOpacity
-                        style={styles.confirmBtn}
-                        onPress={onConfirm}>
-                        <Text style={styles.confirmTxt}>SIM</Text>
-                      </TouchableOpacity>
-                    ),
-                  },
-                  {
-                    id: 2,
-                    component: (
-                      <TouchableOpacity
-                        style={styles.cancelBtn}
-                        onPress={onCancel}>
-                        <Text style={styles.cancelTxt}>NÃO</Text>
-                      </TouchableOpacity>
-                    ),
-                  },
-                ]}
-              />
+              <Row>
+                <Col style={styles.colLeft} size="5">
+                  <TouchableOpacity
+                    style={styles.confirmBtn}
+                    onPress={onConfirm}>
+                    <Text style={styles.confirmTxt}>SIM</Text>
+                  </TouchableOpacity>
+                </Col>
+                <Col style={styles.colRight} size="5">
+                  <TouchableOpacity style={styles.cancelBtn} onPress={onCancel}>
+                    <Text style={styles.cancelTxt}>NÃO</Text>
+                  </TouchableOpacity>
+                </Col>
+              </Row>
             </View>
           </>
         )}
@@ -122,7 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#09354B',
     padding: 10,
     borderRadius: 10,
-    width: 60,
+    width: '100%',
   },
   confirmTxt: {
     color: '#ffffff',
@@ -132,7 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#999999',
     padding: 10,
     borderRadius: 10,
-    width: 60,
+    width: '100%',
   },
   cancelTxt: {
     color: '#ffffff',
@@ -171,5 +162,11 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  colLeft: {
+    paddingRight: 5,
+  },
+  colRight: {
+    paddingLeft: 5,
   },
 });

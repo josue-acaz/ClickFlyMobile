@@ -42,7 +42,7 @@ export default function PaymentMethods({route, navigation}) {
           navigation.goBack();
         }}
       />
-      <SubsectionTitle text="Meios de pagamento" />
+      <SubsectionTitle text="Formas de pagamento" />
       {loading ? (
         <Center>
           <MaterialIndicator style={styles.loading} color="#09354B" />
@@ -54,6 +54,7 @@ export default function PaymentMethods({route, navigation}) {
             <View style={styles.cards}>
               {payment.map((pay, index) => (
                 <Card
+                  key={pay.id}
                   card={pay}
                   style={index === payment.length - 1 ? styles.lastCard : {}}
                 />

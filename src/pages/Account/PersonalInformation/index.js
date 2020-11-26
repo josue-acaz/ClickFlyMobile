@@ -8,6 +8,7 @@ import {
   Button,
   BottomAction,
   Alert,
+  Label,
 } from '../../../components';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -178,6 +179,7 @@ export default function PersonalInformation({navigation, route}) {
           <ArrowBack onPress={handleGoBack} />
           <SubsectionTitle text="Informações Pessoais" />
           <View style={styles.form}>
+            <Label text="Nome completo" />
             <Input
               autoCapitalize="words"
               autoCorrect={false}
@@ -189,6 +191,7 @@ export default function PersonalInformation({navigation, route}) {
                 handleChange({name: 'name', value: text});
               }}
             />
+            <Label text="Endereço de email" />
             <Input
               keyboardType="email-address"
               autoCapitalize="none"
@@ -202,6 +205,7 @@ export default function PersonalInformation({navigation, route}) {
             />
             {customer_type === 'physical_entity' ? (
               <>
+                <Label text="Número do RG" />
                 <Input
                   keyboardType="numeric"
                   placeholder="RG"
@@ -211,6 +215,7 @@ export default function PersonalInformation({navigation, route}) {
                     handleChange({name: 'rg', value: text});
                   }}
                 />
+                <Label text="Número do CPF" />
                 <Input
                   keyboardType="numeric"
                   placeholder="CPF"
@@ -222,6 +227,7 @@ export default function PersonalInformation({navigation, route}) {
                     }
                   }}
                 />
+                <Label text="Data de nascimento" />
                 <Input
                   keyboardType="numeric"
                   placeholder="Data de nascimento"
@@ -235,18 +241,22 @@ export default function PersonalInformation({navigation, route}) {
                 />
               </>
             ) : (
-              <Input
-                keyboardType="numeric"
-                placeholder="CNPJ"
-                value={inputs.cnpj}
-                leftIcon={<IDCardIcon />}
-                onChangeText={(value) => {
-                  if (value.length <= 18 || value === '') {
-                    handleChange({name: 'cnpj', value: maskCnpj(value)});
-                  }
-                }}
-              />
+              <>
+                <Label text="Número do CNPJ" />
+                <Input
+                  keyboardType="numeric"
+                  placeholder="CNPJ"
+                  value={inputs.cnpj}
+                  leftIcon={<IDCardIcon />}
+                  onChangeText={(text) => {
+                    if (text.length <= 18 || text === '') {
+                      handleChange({name: 'cnpj', value: maskCnpj(text)});
+                    }
+                  }}
+                />
+              </>
             )}
+            <Label text="Número de Telefone" />
             <Input
               keyboardType="number-pad"
               placeholder="Telefone"

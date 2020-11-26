@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
+import {getBottomSpace} from 'react-native-iphone-x-helper';
 
 const BottomAction = ({children}) => (
   <View style={styles.bottom}>{children}</View>
@@ -8,7 +9,7 @@ const BottomAction = ({children}) => (
 const styles = StyleSheet.create({
   bottom: {
     paddingTop: 10,
-    paddingBottom: 20,
+    paddingBottom: getBottomSpace(),
     paddingHorizontal: 10,
     position: 'absolute',
     bottom: 0,

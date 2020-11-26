@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
-import {SafeAreaView, StyleSheet, Alert, View, Text} from 'react-native';
-import {MaterialIndicator} from 'react-native-indicators';
+import {StyleSheet, View, Text} from 'react-native';
 import {
   Button,
   ArrowBack,
-  VerticalSpaceBetween,
-  Title,
+  SubsectionTitle,
   Input,
+  Screen,
+  BottomAction,
+  Alert,
 } from '../../components';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../../services/api';
@@ -15,6 +16,16 @@ export default function ForgotPassword({route, navigation}) {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [alert, setAlert] = useState({
+    open: false,
+    success: false,
+    error: false,
+  });
+  function handleAlert(e) {
+    const {name, value} = e;
+    setAlert((al) => ({...al, [name]: value}));
+  }
 
   const EmailIcon = () => (
     <MaterialCommunityIcons name="email-outline" size={22} color="#09354B" />
@@ -28,80 +39,73 @@ export default function ForgotPassword({route, navigation}) {
       try {
         await api.put(`/forgot_password/${email}`);
         setLoading(false);
-
-        Alert.alert(
-          'Email enviado',
-          `Clique no link enviado para ${email} para redefinir sua senha!`,
-          [
-            {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
-            },
-            {
-              text: 'OK',
-              onPress: () => {
-                navigation.goBack();
-              },
-            },
-          ],
-          {cancelable: false},
-        );
+        handleAlert({name: 'success', value: true});
+        handleAlert({name: 'open', value: true});
       } catch (error) {
         console.log(error);
+        setLoading(false);
+        handleAlert({name: 'error', value: true});
+        handleAlert({name: 'open', value: true});
       }
     }
   }
 
+  function handleOk() {
+    handleAlert({name: 'open', value: false});
+    if (alert.success) {
+      navigation.goBack();
+    }
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <VerticalSpaceBetween
-          components={[
-            {
-              id: 1,
-              component: (
-                <View style={styles.form}>
-                  <ArrowBack onPress={() => navigation.goBack()} />
-                  <View style={styles.main}>
-                    <Title text="Recuperar senha" />
-
-                    <Text style={styles.text}>
-                      Digite o endereço de e-mail da sua conta e enviaremos
-                      instruções para redefinir sua senha.
-                    </Text>
-
-                    <View style={styles.inputs}>
-                      <Input
-                        placeholder="Informe seu email cadastrado"
-                        adorment={<EmailIcon />}
-                        keyboardType="email-address"
-                        error={submitted && !email}
-                        value={email}
-                        onChangeText={setEmail}
-                        errorTxt="Campo obrigatório"
-                      />
-                    </View>
-                  </View>
-                </View>
-              ),
-            },
-            {
-              id: 2,
-              component: (
-                <Button onPress={handleSubmit}>
-                  {loading ? (
-                    <MaterialIndicator size={30} color={'#FFFFFF'} />
-                  ) : (
-                    <Text style={styles.btnTxt}>Enviar</Text>
-                  )}
-                </Button>
-              ),
-            },
-          ]}
+    <>
+      <Screen>
+        <Alert
+          open={alert.open}
+          success={alert.success}
+          successTitle="Email enviado"
+          successMessage={
+            <Text style={styles.email}>
+              Para redefinir sua senha, clique no link que foi enviado para{' '}
+              <Text style={styles.bold}>{email}</Text>.
+            </Text>
+          }
+          error={alert.error}
+          errorTitle="Erro"
+          errorMessage="Não foi possível enviar o email de recuperção, desculpe o transtorno."
+          onOk={handleOk}
         />
-      </View>
-    </SafeAreaView>
+        <ArrowBack
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+        <SubsectionTitle text="Recuperar senha" />
+        <Text style={styles.text}>
+          Digite o endereço de e-mail da sua conta e enviaremos instruções para
+          redefinir sua senha.
+        </Text>
+        <View style={styles.inputs}>
+          <Input
+            placeholder="Informe seu email cadastrado"
+            adorment={<EmailIcon />}
+            keyboardType="email-address"
+            error={submitted && !email}
+            value={email}
+            onChangeText={setEmail}
+            errorTxt="Campo obrigatório"
+          />
+        </View>
+      </Screen>
+      <BottomAction>
+        <Button
+          processing={loading}
+          disabled={loading}
+          text="Enviar"
+          onPress={handleSubmit}
+        />
+      </BottomAction>
+    </>
   );
 }
 

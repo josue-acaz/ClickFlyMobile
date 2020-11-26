@@ -1,5 +1,16 @@
 import React from 'react';
-import {View, TextInput, StyleSheet, Text} from 'react-native';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const HelpIcon = () => (
+  <Ionicons name="ios-help-circle-outline" size={24} color="#666666" />
+);
 
 const Input = ({
   placeholder,
@@ -14,30 +25,46 @@ const Input = ({
   autoCorrect = false,
   adormentPosition = 'start',
   styleAdorment,
+  onBlur,
+  style,
+  onHelp,
+  helper = false,
 }) => (
   <View style={styles.inputContainer}>
     <View style={styles.input}>
       {adorment && (
-        <View
-          style={{
-            ...(adormentPosition === 'start'
-              ? styles.adormentStart
-              : styles.adormentEnd),
-            ...styleAdorment,
-          }}>
-          {adorment}
-        </View>
+        <>
+          {helper && (
+            <View style={styles.helper}>
+              <TouchableOpacity onPress={onHelp}>
+                <HelpIcon />
+              </TouchableOpacity>
+            </View>
+          )}
+          <View
+            style={{
+              ...styles.adorment,
+              ...(adormentPosition === 'start'
+                ? styles.adormentStart
+                : styles.adormentEnd),
+              ...styleAdorment,
+            }}>
+            {adorment}
+          </View>
+        </>
       )}
       <TextInput
-        style={
-          adorment
+        style={{
+          ...(adorment
             ? adormentPosition === 'start'
               ? {...styles.textInput, ...styles.inputAdormentStart}
               : {...styles.textInput, ...styles.inputAdormentEnd}
-            : styles.textInput
-        }
+            : styles.textInput),
+          ...style,
+        }}
         value={value}
         keyboardType={keyboardType}
+        onBlur={onBlur}
         autoCapitalize={autoCapitalize}
         autoCorrect={autoCorrect}
         onChangeText={(text) => {
@@ -57,7 +84,9 @@ const styles = StyleSheet.create({
   input: {
     position: 'relative',
   },
-  inputContainer: {},
+  inputContainer: {
+    marginBottom: 12,
+  },
   textInput: {
     paddingLeft: 16,
     paddingRight: 16,
@@ -73,6 +102,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#f1f1f1',
   },
+  adorment: {
+    position: 'absolute',
+    zIndex: 9999,
+  },
+  helper: {
+    position: 'absolute',
+    zIndex: 9999,
+    top: 4,
+  },
   inputAdormentEnd: {
     paddingRight: 42,
   },
@@ -80,13 +118,11 @@ const styles = StyleSheet.create({
     paddingLeft: 42,
   },
   adormentStart: {
-    position: 'absolute',
     bottom: 20,
     left: 14,
     zIndex: 9,
   },
   adormentEnd: {
-    position: 'absolute',
     bottom: 20,
     right: 14,
     zIndex: 9,
@@ -97,6 +133,7 @@ const styles = StyleSheet.create({
   errorTxt: {
     fontSize: 12,
     color: '#ffa6a6',
+    zIndex: 1,
   },
 });
 

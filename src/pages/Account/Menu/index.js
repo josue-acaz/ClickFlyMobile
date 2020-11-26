@@ -5,11 +5,12 @@ import {MaterialIndicator} from 'react-native-indicators';
 import {Screen, Profile, Center} from '../../../components';
 import {useAuth} from '../../../contexts/auth';
 import api from '../../../services/api';
+import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 
 const list = [
   {
     id: 1,
-    title: 'Informações pessoais',
+    title: 'Informações Pessoais',
     icon: 'person',
     route: 'PersonalInformation',
   },
@@ -46,6 +47,8 @@ export default function Menu({navigation, route}) {
   const {id} = user.customer;
 
   useEffect(() => {
+    setLoading(true);
+
     async function getUserAsync(customer_id) {
       try {
         const response = await api.get(`/customers/${customer_id}/show`);
@@ -58,7 +61,8 @@ export default function Menu({navigation, route}) {
     }
 
     getUserAsync(id);
-  }, [id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.params]);
 
   function handleChangeProfile() {
     navigation.navigate('ChangeProfilePhoto', {customer});
@@ -88,7 +92,7 @@ export default function Menu({navigation, route}) {
                 <Text style={styles.customerName}>{customer.user.name}</Text>
               </View>
               <View style={styles.content}>
-                {list.map((item, i) => (
+                {list.map((item) => (
                   <ListItem
                     key={item.id}
                     title={item.title}
@@ -98,7 +102,10 @@ export default function Menu({navigation, route}) {
                       if (item.id === 5) {
                         signOut();
                       } else {
-                        navigation.navigate(item.route, {customer});
+                        navigation.navigate(item.route, {
+                          customer,
+                          returnRoute: 'Menu',
+                        });
                       }
                     }}
                   />
@@ -114,7 +121,7 @@ export default function Menu({navigation, route}) {
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 50,
+    marginTop: getStatusBarHeight(),
   },
   profile: {
     flexDirection: 'row',

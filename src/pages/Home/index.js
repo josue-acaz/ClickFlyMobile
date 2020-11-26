@@ -40,9 +40,7 @@ export default function Home() {
         options={({route}) => {
           const routeName = getFocusedRouteNameFromRoute(route);
           return {
-            tabBarVisible: !(
-              routeName === 'ChooseSeat' || routeName === 'Checkout'
-            ),
+            tabBarVisible: routeName === 'EmptyLegs' || !routeName,
           };
         }}
       />
@@ -53,9 +51,7 @@ export default function Home() {
           options={({route}) => {
             const routeName = getFocusedRouteNameFromRoute(route);
             return {
-              tabBarVisible: !(
-                routeName === 'Tickets' || routeName === 'Details'
-              ),
+              tabBarVisible: routeName === 'Reservations' || !routeName,
             };
           }}
         />
@@ -66,7 +62,8 @@ export default function Home() {
         options={({route}) => {
           const routeName = getFocusedRouteNameFromRoute(route);
           return {
-            tabBarVisible: routeName === 'Menu' || routeName === 'NotLogged',
+            tabBarVisible:
+              routeName === 'Menu' || routeName === 'NotLogged' || !routeName,
           };
         }}
       />

@@ -41,9 +41,7 @@ export default function Card({card, style}) {
         )}
         <Col size="6">
           <Text style={styles.title}>Cartão de Crédito</Text>
-          <Text style={styles.card_number}>
-            {brand.toUpperCase()} {card_number}
-          </Text>
+          <Text style={styles.card_number}>{card_number}</Text>
         </Col>
         <Col size={openActions ? '2' : '4'} style={styles.colRight}>
           <View style={styles.actions}>

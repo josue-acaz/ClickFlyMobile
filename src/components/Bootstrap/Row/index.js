@@ -1,7 +1,9 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 
-const Row = ({children}) => <View style={styles.row}>{children}</View>;
+const Row = ({children, style}) => (
+  <View style={{...styles.row, ...style}}>{children}</View>
+);
 
 const styles = StyleSheet.create({
   row: {

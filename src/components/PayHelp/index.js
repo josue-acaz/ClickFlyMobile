@@ -7,23 +7,23 @@ const HelpIcon = () => (
   <Ionicons name="ios-help-circle-outline" size={24} color="#666666" />
 );
 
-export default function PayHelp() {
+export default function PayHelp({onHelp}) {
   return (
     <View style={styles.payHelp}>
       <View style={styles.consult}>
         <Text style={styles.consultTxt}>
-          Para utilizar débito, consulte as condições de uso.
-        </Text>
-        <View style={styles.help}>
-          <TouchableOpacity style={styles.helpBtn}>
+          Para utilizar débito, consulte as condições de uso.{' '}
+          <TouchableOpacity onPress={onHelp} style={styles.helpBtn}>
             <HelpIcon />
           </TouchableOpacity>
-        </View>
+        </Text>
       </View>
       <View style={styles.brands}>
         {brands.map((brand, index) => {
           if (index < brands.length - 3) {
-            return <Image style={styles.img} source={brand.img} />;
+            return (
+              <Image key={brand.id} style={styles.img} source={brand.img} />
+            );
           }
         })}
       </View>
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666666',
     textAlign: 'center',
+    lineHeight: 22,
   },
   consult: {
     marginBottom: 10,
@@ -52,5 +53,8 @@ const styles = StyleSheet.create({
     height: 35,
     width: 35,
     resizeMode: 'contain',
+  },
+  helpBtn: {
+    marginTop: -4,
   },
 });

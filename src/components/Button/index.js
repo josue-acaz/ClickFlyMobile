@@ -1,5 +1,6 @@
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {TouchableOpacity, Text, StyleSheet, View} from 'react-native';
+import {MaterialIndicator} from 'react-native-indicators';
 
 const Button = ({
   text = '',
@@ -7,18 +8,34 @@ const Button = ({
   children,
   style = {},
   disabled = false,
+  processing = false,
+  color = '#09354B',
+  textColor = '#FFFFFF',
 }) => {
   const disableStyle = disabled ? styles.disabled : {};
   const disableText = disabled ? styles.disabledText : {};
 
   return (
     <TouchableOpacity
-      style={{...styles.button, ...style, ...disableStyle}}
-      onPress={disabled ? () => {} : onPress}>
+      onPress={disabled ? () => {} : onPress}
+      style={{
+        ...styles.button,
+        backgroundColor: color,
+        ...style,
+        ...disableStyle,
+      }}>
       {children ? (
         children
       ) : (
-        <Text style={{...styles.text, ...disableText}}>{text}</Text>
+        <>
+          {processing ? (
+            <MaterialIndicator size={30} color={'#09354B'} />
+          ) : (
+            <Text style={{...styles.text, color: textColor, ...disableText}}>
+              {text}
+            </Text>
+          )}
+        </>
       )}
     </TouchableOpacity>
   );
@@ -27,14 +44,19 @@ const Button = ({
 const styles = StyleSheet.create({
   button: {
     padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#09354B',
+    borderRadius: 6,
     width: '100%',
     height: 50,
+    shadowColor: '#999999',
+    shadowOpacity: 0.5,
+    elevation: 5,
+    shadowOffset: {
+      width: 1,
+      height: 1,
+    },
   },
   text: {
     fontWeight: 'bold',
-    color: '#ffffff',
     textAlign: 'center',
   },
   disabledText: {

@@ -12,8 +12,10 @@ import {
   Button,
   CardInput,
   Alert,
+  BottomOverlay,
+  Helpers,
 } from '../../components';
-import {maskCardExpiry, maskCnpj, maskCpf} from '../../utils';
+import {maskCardExpiry} from '../../utils';
 import api from '../../services/api';
 import mundipagg from '../../services/mundipagg';
 
@@ -28,19 +30,14 @@ export default function AddPay({navigation, route}) {
     expires: '',
     cvv: '',
     holder_name: '',
-    document: '', // CPF/CNPJ
     brand: '',
   });
   function handleChange(e) {
     const {name, value} = e;
-    setInputs((inputs) => ({...inputs, [name]: value}));
+    setInputs((inp) => ({...inp, [name]: value}));
   }
   const toSubmit =
-    inputs.holder_name &&
-    inputs.expires &&
-    inputs.cvv &&
-    inputs.card_number &&
-    inputs.document;
+    inputs.holder_name && inputs.expires && inputs.cvv && inputs.card_number;
 
   const [submitted, setSubmitted] = useState(false);
   const [alert, setAlert] = useState({
@@ -51,7 +48,17 @@ export default function AddPay({navigation, route}) {
   });
   function handleAlert(e) {
     const {name, value} = e;
-    setAlert((alert) => ({...alert, [name]: value}));
+    setAlert((al) => ({...al, [name]: value}));
+  }
+
+  const [visible, setVisible] = useState(false);
+  function handleVisible() {
+    setVisible(!visible);
+  }
+
+  const [helperName, setHelperName] = useState('');
+  function handleHelperName(helper_name) {
+    setHelperName(helper_name);
   }
 
   function handleSubmit() {
@@ -90,14 +97,32 @@ export default function AddPay({navigation, route}) {
       handleAlert({name: 'processing', value: false});
       handleAlert({name: 'success', value: true});
     } catch (err) {
-      console.log(err.response);
       handleAlert({name: 'processing', value: false});
       handleAlert({name: 'error', value: true});
     }
   }
 
   function handleFinish() {
-    navigation.navigate(returnRoute, {loading: true});
+    handleAlert({name: 'open', value: false});
+
+    // Se existem etapas
+    const steps = route.params.steps || null;
+    if (steps) {
+      steps.shift();
+      route.params.steps = steps;
+      navigation.navigate(
+        steps.length > 0 ? steps[0].route : returnRoute,
+        route.params,
+      );
+      return;
+    }
+
+    // Se não existem etapas
+    if (alert.error) {
+      navigation.goBack();
+    } else {
+      navigation.navigate(returnRoute, {loading: true});
+    }
   }
 
   return (
@@ -130,7 +155,12 @@ export default function AddPay({navigation, route}) {
           />
           <SubsectionTitle text="Cartão de Crédito/Débito" />
           <View style={styles.payHelp}>
-            <PayHelp />
+            <PayHelp
+              onHelp={() => {
+                handleHelperName('AboutDebit');
+                handleVisible();
+              }}
+            />
           </View>
           <View style={styles.form}>
             <CardInput
@@ -171,6 +201,11 @@ export default function AddPay({navigation, route}) {
                       });
                     }
                   }}
+                  helper={true}
+                  onHelp={() => {
+                    handleHelperName('CVV');
+                    handleVisible();
+                  }}
                   error={submitted && !inputs.cvv}
                   errorTxt="Preencha este campo"
                   iconColor="#666666"
@@ -185,21 +220,15 @@ export default function AddPay({navigation, route}) {
               }}
               error={submitted && !inputs.holder_name}
             />
-            <Input
-              value={inputs.document}
-              placeholder="CPF/CNPJ"
-              onChangeText={(text) => {
-                if (text.length <= 18 || text === '') {
-                  handleChange({
-                    name: 'document',
-                    value: text.length <= 14 ? maskCpf(text) : maskCnpj(text),
-                  });
-                }
-              }}
-              error={submitted && !inputs.document}
-            />
           </View>
         </ScrollView>
+        <BottomOverlay visible={visible} handleVisible={handleVisible}>
+          {helperName === 'AboutDebit' ? (
+            <Helpers.AboutDebit onDimiss={handleVisible} />
+          ) : (
+            <Helpers.CVV onDimiss={handleVisible} />
+          )}
+        </BottomOverlay>
       </Screen>
       <BottomAction>
         <Button text="Salvar" onPress={handleSubmit} disabled={!toSubmit} />

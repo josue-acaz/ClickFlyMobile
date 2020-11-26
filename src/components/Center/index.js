@@ -1,12 +1,13 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 
-const Center = ({children}) => <View style={styles.center}>{children}</View>;
+const Center = ({children, style}) => (
+  <View style={{...styles.center, ...style}}>{children}</View>
+);
 
 const styles = StyleSheet.create({
   center: {
     height: '100%',
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
