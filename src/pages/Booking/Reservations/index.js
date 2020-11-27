@@ -7,6 +7,8 @@ import {
   Loader,
   Center,
   BookingItem,
+  BottomOverlay,
+  Helpers,
 } from '../../../components';
 import {useAuth} from '../../../contexts/auth';
 import api from '../../../services/api';
@@ -16,6 +18,10 @@ export default function Reservations({navigation, route}) {
   const {user} = useAuth();
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
+  const [visible, setVisible] = useState(false);
+  function handleVisible() {
+    setVisible(!visible);
+  }
 
   useEffect(() => {
     async function index(customer_id) {
@@ -60,9 +66,14 @@ export default function Reservations({navigation, route}) {
               <View style={styles.bookings}>
                 {bookings.map((booking) => (
                   <BookingItem
+                    key={booking.id + ''}
                     booking={booking}
                     handleShow={() => {
-                      handleShow(booking);
+                      if (booking.approved) {
+                        handleShow(booking);
+                      } else {
+                        handleVisible();
+                      }
                     }}
                   />
                 ))}
@@ -81,6 +92,9 @@ export default function Reservations({navigation, route}) {
           )}
         </>
       )}
+      <BottomOverlay visible={visible} handleVisible={handleVisible}>
+        <Helpers.AwaitPay onDimiss={handleVisible} />
+      </BottomOverlay>
     </Screen>
   );
 }

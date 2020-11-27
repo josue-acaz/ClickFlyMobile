@@ -65,7 +65,7 @@ export default function Menu({navigation, route}) {
   }, [route.params]);
 
   function handleChangeProfile() {
-    navigation.navigate('ChangeProfilePhoto', {customer});
+    //navigation.navigate('ChangeProfilePhoto', {customer});
   }
 
   return (

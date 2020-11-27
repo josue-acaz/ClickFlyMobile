@@ -30,6 +30,7 @@ export default function Friend({
         </Col>
         <Col size="7">
           <Text style={styles.friendName}>{cutText(friend.name, 30)}</Text>
+          <Text style={styles.friendPhone}>{friend.phone}</Text>
         </Col>
         {!activeSelection && (
           <Col size="2" style={styles.colEnd}>
@@ -62,5 +63,9 @@ const styles = StyleSheet.create({
   friendName: {
     fontSize: 16,
     color: '#444444',
+  },
+  friendPhone: {
+    fontSize: 16,
+    color: '#00B2A9',
   },
 });

@@ -9,6 +9,7 @@ import {
   BottomAction,
   Inline,
   Passenger,
+  BottomSpace,
 } from '../../../components';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {mergeCustomer} from '../../../utils';
@@ -104,6 +105,7 @@ export default function Passengers({navigation, route}) {
 
           <View style={styles.banner}>
             <Inline
+              style={styles.feedback}
               justify="space-between"
               components={[
                 {
@@ -119,9 +121,13 @@ export default function Passengers({navigation, route}) {
                 {
                   id: 2,
                   component: (
-                    <View style={styles.passengerIcon}>
-                      <PassengerIcon />
-                    </View>
+                    <>
+                      {remainingSeats() > 0 && (
+                        <View style={styles.passengerIcon}>
+                          <PassengerIcon />
+                        </View>
+                      )}
+                    </>
                   ),
                 },
               ]}
@@ -142,6 +148,7 @@ export default function Passengers({navigation, route}) {
                 ))}
             </View>
           </View>
+          <BottomSpace />
         </ScrollView>
       </Screen>
       <BottomAction>
@@ -167,6 +174,9 @@ const styles = StyleSheet.create({
   bannerTxt: {
     fontSize: 18,
     color: '#444',
+  },
+  feedback: {
+    height: 40,
   },
   passengerIcon: {
     padding: 4,

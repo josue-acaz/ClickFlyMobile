@@ -9,6 +9,7 @@ import {
   BottomAction,
   Alert,
   Label,
+  BottomSpace,
 } from '../../../components';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -272,6 +273,7 @@ export default function PersonalInformation({navigation, route}) {
               }}
             />
           </View>
+          <BottomSpace />
         </ScrollView>
       </Screen>
       <BottomAction>

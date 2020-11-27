@@ -32,9 +32,7 @@ export default function PickerInput({
           <RNPickerSelect
             Icon={DropdownIcon}
             style={styles.select}
-            placeholder={{
-              label: 'Selecione...',
-            }}
+            placeholder={{}}
             value={picked}
             textInputProps={{
               style: styles.pickerTxt,
@@ -62,10 +60,11 @@ const styles = StyleSheet.create({
     paddingLeft: 74,
   },
   icon: {
-    left: 10,
-    top: -4,
+    left: -40,
+    top: 10,
   },
   select: {
-    width: 50,
+    width: 100,
+    top: 10,
   },
 });

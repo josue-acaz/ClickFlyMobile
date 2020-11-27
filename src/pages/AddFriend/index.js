@@ -11,6 +11,7 @@ import {
   Label,
   Alert,
   PickerInput,
+  BottomSpace,
 } from '../../components';
 import api from '../../services/api';
 import {maskPhone, maskData, inDOB} from '../../utils';
@@ -193,6 +194,7 @@ export default function AddFriend({navigation, route}) {
               }}
             />
           </Form>
+          <BottomSpace />
         </ScrollView>
       </Screen>
       <BottomAction>

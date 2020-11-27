@@ -160,6 +160,6 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 12,
-    color: '#222',
+    color: '#444',
   },
 });

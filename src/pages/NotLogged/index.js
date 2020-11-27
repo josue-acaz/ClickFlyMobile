@@ -25,7 +25,7 @@ export default function NotLogged({navigation, title}) {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#444',
     marginBottom: 20,

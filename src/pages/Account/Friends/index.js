@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
   },
   toolbar: {
     marginBottom: 15,
+    height: 50,
   },
   selectedTxt: {
     color: '#666666',

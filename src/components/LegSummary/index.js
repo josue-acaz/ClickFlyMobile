@@ -1,10 +1,10 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
-import {Bootstrap, Inline} from '../../components';
+import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
+import {Inline} from '../../components';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getDatetime, currency} from '../../utils';
 
-const {Row, Col} = Bootstrap;
+const {width} = Dimensions.get('screen');
 
 const ArrowIcon = () => (
   <MaterialIcons name="arrow-forward" size={22} color="#333" />
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   thumbnail: {
-    width: 150,
+    width: width * 0.4,
     height: 90,
     resizeMode: 'cover',
     borderRadius: 5,

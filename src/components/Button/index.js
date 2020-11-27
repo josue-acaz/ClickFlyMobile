@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet, View} from 'react-native';
+import {TouchableOpacity, Text, StyleSheet, Platform} from 'react-native';
 import {MaterialIndicator} from 'react-native-indicators';
 
 const Button = ({
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     shadowColor: '#999999',
-    shadowOpacity: 0.5,
-    elevation: 5,
+    shadowOpacity: 0.4,
+    elevation: Platform.OS === 'android' ? 1 : 5,
     shadowOffset: {
       width: 1,
       height: 1,

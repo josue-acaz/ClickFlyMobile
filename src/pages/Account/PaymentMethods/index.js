@@ -13,6 +13,7 @@ import {
   SubsectionTitle,
   Center,
   Card,
+  Subtitle,
 } from '../../../components';
 import api from '../../../services/api';
 
@@ -49,13 +50,13 @@ export default function PaymentMethods({route, navigation}) {
         }}
       />
       <SubsectionTitle text="Formas de pagamento" />
+      <Subtitle text="Seus cartões" />
       {loading ? (
         <Center>
           <MaterialIndicator style={styles.loading} color="#09354B" />
         </Center>
       ) : (
         <View style={styles.content}>
-          <Text style={styles.cardsTxt}>Seus cartões</Text>
           {payment.length > 0 ? (
             <View style={styles.cards}>
               <ScrollView>

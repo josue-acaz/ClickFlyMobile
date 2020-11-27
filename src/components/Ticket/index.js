@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
+import {View, Text, StyleSheet, Dimensions, Image, Platform} from 'react-native';
 import Divider from './Divider';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {MaterialIndicator} from 'react-native-indicators';
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     shadowColor: '#666',
     shadowOpacity: 0.1,
-    elevation: 10,
+    elevation: Platform.OS === 'android' ? 2 : 6,
     shadowOffset: {
       width: 6,
       height: 6,

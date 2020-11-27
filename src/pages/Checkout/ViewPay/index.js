@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import {CommonActions} from '@react-navigation/native';
 import {
   Screen,
@@ -30,6 +30,8 @@ const ErrorIcon = ({style}) => (
 const SuccessICon = ({style}) => (
   <Feather style={style} name="check" size={42} color="#00B2A9" />
 );
+
+const {height} = Dimensions.get('screen');
 
 export default function ViewPay({navigation, route}) {
   const {status} = route.params.booking;
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   content: {
-    marginBottom: '20%',
+    marginBottom: height * 0.3,
     width: '100%',
   },
 });

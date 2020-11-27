@@ -173,31 +173,19 @@ export default function RouteGraph({data}) {
 
 const styles = StyleSheet.create({
   routeGraph: {
-    marginTop: 60,
-    marginBottom: 10,
-    height: '50%',
+    paddingTop: '20%',
   },
   graphSymbol: {
     color: '#00B2A9',
     fontWeight: 'bold',
     fontSize: 18,
-    lineHeight: 12,
   },
   graph: {
     marginTop: 20,
-  },
-  colLeft: {
-    flexDirection: 'row',
-  },
-  drawnGraph: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    height: '100%',
+    height: 200,
   },
   routeDetails: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    height: '100%',
+    height: 200,
   },
   time: {
     color: '#00B2A9',

@@ -10,6 +10,7 @@ import {
   BottomAction,
   Button,
   Alert,
+  BottomSpace,
 } from '../../../components';
 import {consultZipcode} from '../../../services/extra';
 import {maskCep, rmEspecialCaracteres} from '../../../utils';
@@ -230,6 +231,7 @@ export default function Address({navigation, route}) {
               }}
             />
           </Form>
+          <BottomSpace />
         </ScrollView>
       </Screen>
       <BottomAction>

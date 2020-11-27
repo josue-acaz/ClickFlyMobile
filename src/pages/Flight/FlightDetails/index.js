@@ -11,6 +11,7 @@ import {
   BottomOverlay,
   Aircraft,
   RouteGraph,
+  BottomSpace,
 } from '../../../components';
 import {currency, calcSubtotal} from '../../../utils';
 
@@ -60,6 +61,7 @@ export default function FlightDetails({navigation, route}) {
               departure_datetime: flight.departure_datetime,
             }}
           />
+          <BottomSpace />
         </ScrollView>
       </Screen>
       <BottomAction>
