@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
+import {getBottomSpace} from 'react-native-iphone-x-helper';
 
 const FloatingButton = ({icon, color = '#ffffff', onPress}) => (
   <TouchableOpacity
@@ -12,7 +13,7 @@ const FloatingButton = ({icon, color = '#ffffff', onPress}) => (
 const styles = StyleSheet.create({
   floatingBtn: {
     position: 'absolute',
-    bottom: StyleSheet.hairlineWidth,
+    bottom: getBottomSpace() > 0 ? getBottomSpace() : 10,
     right: 10,
     borderRadius: 2000,
     width: 55,

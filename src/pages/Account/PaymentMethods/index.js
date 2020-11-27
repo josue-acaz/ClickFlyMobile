@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {MaterialIndicator} from 'react-native-indicators';
 import {
   Screen,
@@ -14,7 +20,6 @@ export default function PaymentMethods({route, navigation}) {
   const {customer} = route.params;
   const [payment, setPayment] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     async function index() {
@@ -29,7 +34,8 @@ export default function PaymentMethods({route, navigation}) {
     }
 
     index();
-  }, [route, refresh, customer.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.params]);
 
   const handleAddPay = () => {
     navigation.navigate('AddPay', {customer, returnRoute: 'PaymentMethods'});
@@ -52,13 +58,15 @@ export default function PaymentMethods({route, navigation}) {
           <Text style={styles.cardsTxt}>Seus cartões</Text>
           {payment.length > 0 ? (
             <View style={styles.cards}>
-              {payment.map((pay, index) => (
-                <Card
-                  key={pay.id}
-                  card={pay}
-                  style={index === payment.length - 1 ? styles.lastCard : {}}
-                />
-              ))}
+              <ScrollView>
+                {payment.map((pay, index) => (
+                  <Card
+                    key={pay.id}
+                    card={pay}
+                    style={index === payment.length - 1 ? styles.lastCard : {}}
+                  />
+                ))}
+              </ScrollView>
             </View>
           ) : (
             <Text style={styles.emptyTxt}>

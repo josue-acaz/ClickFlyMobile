@@ -49,27 +49,41 @@ export default function LegSummary({
       <Text style={styles.tripTitle}>
         {origin_aerodrome.city.name} • {destination_aerodrome.city.name}
       </Text>
-      <Row>
-        <Col size="4">
-          <Image style={styles.thumbnail} source={{uri: aircraft.thumbnail}} />
-        </Col>
-        <Col size="6">
-          <Text style={styles.departureDate}>
-            {getDatetime(departure_datetime)}
-          </Text>
-          {getRouteLabel({
-            origin_aerodrome_prefix: origin_aerodrome.oaci_code,
-            destination_aerodrome_prefix: destination_aerodrome.oaci_code,
-          })}
-          <Text style={styles.selectedSeats}>
-            {selected_seats}{' '}
-            {selected_seats > 1
-              ? 'assentos selecionados'
-              : 'assento selecionado'}
-          </Text>
-          <Text style={styles.priceItem}>R$ {currency(subtotal)}</Text>
-        </Col>
-      </Row>
+
+      <Inline
+        components={[
+          {
+            id: 1,
+            component: (
+              <Image
+                style={styles.thumbnail}
+                source={{uri: aircraft.thumbnail}}
+              />
+            ),
+          },
+          {
+            id: 2,
+            component: (
+              <View>
+                <Text style={styles.departureDate}>
+                  {getDatetime(departure_datetime)}
+                </Text>
+                {getRouteLabel({
+                  origin_aerodrome_prefix: origin_aerodrome.oaci_code,
+                  destination_aerodrome_prefix: destination_aerodrome.oaci_code,
+                })}
+                <Text style={styles.selectedSeats}>
+                  {selected_seats}{' '}
+                  {selected_seats > 1
+                    ? 'assentos selecionados'
+                    : 'assento selecionado'}
+                </Text>
+                <Text style={styles.priceItem}>R$ {currency(subtotal)}</Text>
+              </View>
+            ),
+          },
+        ]}
+      />
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, StyleSheet} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ArrowBackIcon = () => (
@@ -8,8 +8,14 @@ const ArrowBackIcon = () => (
 
 export default function ArrowBack({onPress}) {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity style={styles.arrow} onPress={onPress}>
       <ArrowBackIcon />
     </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  arrow: {
+    marginTop: 10,
+  },
+});

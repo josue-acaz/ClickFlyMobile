@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     padding: 10,
     paddingTop: 20,
-    paddingBottom: getBottomSpace(),
+    paddingBottom: getBottomSpace() > 0 ? getBottomSpace() : 10,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },

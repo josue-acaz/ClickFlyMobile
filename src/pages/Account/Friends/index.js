@@ -187,8 +187,9 @@ export default function Friends({navigation, route}) {
                 </Text>
               )}
             </View>
-            {friends.map((friend) => (
+            {friends.map((friend, index) => (
               <Friend
+                key={index + ''}
                 friend={friend}
                 checked={checked[`checked_${friend.id}`]}
                 handleChecked={handleChecked}

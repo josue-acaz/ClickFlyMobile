@@ -7,6 +7,7 @@ import {
   Ticket,
   BottomAction,
   Button,
+  BottomSpace,
 } from '../../../components';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 
@@ -32,10 +33,12 @@ export default function Tickets({navigation, route}) {
           <View style={styles.tickets}>
             {customer_bookings.map((customer_booking) => (
               <Ticket
+                key={customer_booking.id + ''}
                 booking={{passenger: customer_booking, flight: stretch}}
               />
             ))}
           </View>
+          <BottomSpace />
         </ScrollView>
       </Screen>
       <BottomAction>

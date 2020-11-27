@@ -41,6 +41,7 @@ import SlipPayment from './SlipPayment';
 import DecoratedButton from './DecoratedButton';
 import BookingItem from './BookingItem';
 import Ticket from './Ticket';
+import BottomSpace from './BottomSpace';
 
 export {
   Button,
@@ -86,4 +87,5 @@ export {
   DecoratedButton,
   BookingItem,
   Ticket,
+  BottomSpace,
 };

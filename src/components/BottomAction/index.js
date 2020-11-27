@@ -9,7 +9,7 @@ const BottomAction = ({children}) => (
 const styles = StyleSheet.create({
   bottom: {
     paddingTop: 10,
-    paddingBottom: getBottomSpace(),
+    paddingBottom: getBottomSpace() > 0 ? getBottomSpace() : 10,
     paddingHorizontal: 10,
     position: 'absolute',
     bottom: 0,

@@ -31,6 +31,7 @@ export default function PickerInput({
         adorment={
           <RNPickerSelect
             Icon={DropdownIcon}
+            style={styles.select}
             placeholder={{
               label: 'Selecione...',
             }}
@@ -42,6 +43,7 @@ export default function PickerInput({
             onValueChange={onChangePicker}
           />
         }
+        styleAdorment={styles.select}
         adormentPosition="start"
         placeholder={placeholder}
         onChangeText={onChangeText}
@@ -60,7 +62,10 @@ const styles = StyleSheet.create({
     paddingLeft: 74,
   },
   icon: {
-    left: 24,
+    left: 10,
     top: -4,
+  },
+  select: {
+    width: 50,
   },
 });

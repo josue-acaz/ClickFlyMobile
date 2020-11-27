@@ -54,7 +54,7 @@ export default function ViewPay({navigation, route}) {
         navigateToBookings();
         break;
       case false:
-        navigation.goBack();
+        navigateToBookings();
         break;
       case null:
         navigateToBookings();

@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getLegRoute, getDatetime, currency} from '../../utils';
@@ -15,6 +16,8 @@ import {useNavigation} from '@react-navigation/native';
 const ArrowIcon = () => (
   <MaterialIcons name="arrow-forward" size={22} color="#333" />
 );
+
+const {width, height} = Dimensions.get('screen');
 
 function getRouteLabel(Icon, route) {
   const {
@@ -79,31 +82,29 @@ export default function FlightList({legs}) {
           renderItem={({item}, index) => {
             const {aircraft, origin_aerodrome, destination_aerodrome} = item;
             return (
-              <TouchableOpacity onPress={() => handleShowFlight(item)}>
-                <View
-                  style={
-                    index === empty_legs.length - 1
-                      ? {...styles.item, ...styles.removeMarginRight}
-                      : styles.item
-                  }>
-                  <Image
-                    style={styles.thumbnail}
-                    source={{uri: aircraft.thumbnail}}
-                  />
-                  <View style={styles.content}>
-                    <Text style={styles.departureDate}>
-                      {getDatetime(item.departure_datetime)}
-                    </Text>
-                    {getRouteLabel(ArrowIcon, {
-                      originAerodromePrefix: origin_aerodrome.oaci_code,
-                      destinationAerodromePrefix:
-                        destination_aerodrome.oaci_code,
-                      availableSeats: item.available_seats,
-                    })}
-                    <Text style={styles.price}>
-                      R$ {currency(item.price_per_seat)} por assento
-                    </Text>
-                  </View>
+              <TouchableOpacity
+                style={
+                  index === empty_legs.length - 1
+                    ? {...styles.item, ...styles.removeMarginRight}
+                    : styles.item
+                }
+                onPress={() => handleShowFlight(item)}>
+                <Image
+                  style={styles.thumbnail}
+                  source={{uri: aircraft.thumbnail}}
+                />
+                <View style={styles.content}>
+                  <Text style={styles.departureDate}>
+                    {getDatetime(item.departure_datetime)}
+                  </Text>
+                  {getRouteLabel(ArrowIcon, {
+                    originAerodromePrefix: origin_aerodrome.oaci_code,
+                    destinationAerodromePrefix: destination_aerodrome.oaci_code,
+                    availableSeats: item.available_seats,
+                  })}
+                  <Text style={styles.price}>
+                    R$ {currency(item.price_per_seat)} por assento
+                  </Text>
                 </View>
               </TouchableOpacity>
             );
@@ -134,8 +135,8 @@ const styles = StyleSheet.create({
     marginRight: 0,
   },
   thumbnail: {
-    width: 320,
-    height: 170,
+    width: width * 0.82,
+    height: height * 0.24,
     resizeMode: 'cover',
     borderRadius: 5,
   },

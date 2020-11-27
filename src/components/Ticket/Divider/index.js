@@ -41,12 +41,12 @@ const styles = StyleSheet.create({
   },
   right_circle: {
     position: 'absolute',
-    right: -35,
+    right: -36,
     zIndex: 99,
   },
   left_circle: {
     position: 'absolute',
-    left: 5,
+    left: 4,
     zIndex: 99,
   },
 });
