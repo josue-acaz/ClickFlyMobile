@@ -178,14 +178,18 @@ export function getLegRoute(group) {
   };
 }
 
-export function getDepartureDate(date) {
-  const departureDate = parseISO(date);
-  const formattedDepartureDate = format(
-    departureDate,
-    "dd 'de' MMMM', às ' HH:mm",
-    {locale: ptBR},
-  );
-  return formattedDepartureDate;
+export function getDatetime(date) {
+  const datetime = parseISO(date);
+  const formattedDatetime = format(datetime, "dd 'de' MMMM', às ' HH:mm", {
+    locale: ptBR,
+  });
+  return formattedDatetime;
+}
+
+export function getDate(date) {
+  const object = parseISO(date);
+  const formattedDate = format(object, 'dd MMM', {locale: ptBR});
+  return capitalize(formattedDate);
 }
 
 export function getTime(date) {
@@ -345,4 +349,9 @@ export function maskBarCode(number) {
     /(\d{5})(\d{5})(\d{5})(\d{6})(\d{5})(\d{6})(\d{1})(\d{14})/g,
     '$1.$2 $3.$4 $5.$6 $7 $8',
   );
+}
+
+export function getCityUF(aerodrome) {
+  const {name, uf} = aerodrome.city;
+  return `${name} • ${uf}`;
 }

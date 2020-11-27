@@ -7,7 +7,6 @@ import {
   Loader,
   Center,
   BookingItem,
-  Helpers,
 } from '../../../components';
 import {useAuth} from '../../../contexts/auth';
 import api from '../../../services/api';
@@ -42,6 +41,10 @@ export default function Reservations({navigation, route}) {
     </>
   );
 
+  function handleShow(booking) {
+    navigation.navigate('Tickets', {booking});
+  }
+
   return (
     <Screen>
       {loading ? (
@@ -56,7 +59,12 @@ export default function Reservations({navigation, route}) {
               <Header />
               <View style={styles.bookings}>
                 {bookings.map((booking) => (
-                  <BookingItem booking={booking} />
+                  <BookingItem
+                    booking={booking}
+                    handleShow={() => {
+                      handleShow(booking);
+                    }}
+                  />
                 ))}
               </View>
             </ScrollView>

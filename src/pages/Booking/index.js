@@ -1,11 +1,9 @@
 import React from 'react';
-import {Text} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Screen} from '../../components';
 
 import Reservations from './Reservations';
 import Tickets from './Tickets';
-import BookingDetails from './BookingDetails';
+import Instructions from './Instructions';
 
 const BookingStack = createStackNavigator();
 const hideHeader = {headerShown: false};
@@ -25,9 +23,9 @@ export default function Booking() {
       options: hideHeader,
     },
     {
-      id: 2,
-      name: 'BookingDetails',
-      component: BookingDetails,
+      id: 3,
+      name: 'Instructions',
+      component: Instructions,
       options: hideHeader,
     },
   ];

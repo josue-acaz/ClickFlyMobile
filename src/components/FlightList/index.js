@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {getLegRoute, getDepartureDate, currency} from '../../utils';
+import {getLegRoute, getDatetime, currency} from '../../utils';
 import {Inline} from '../../components';
 import {useNavigation} from '@react-navigation/native';
 
@@ -92,7 +92,7 @@ export default function FlightList({legs}) {
                   />
                   <View style={styles.content}>
                     <Text style={styles.departureDate}>
-                      {getDepartureDate(item.departure_datetime)}
+                      {getDatetime(item.departure_datetime)}
                     </Text>
                     {getRouteLabel(ArrowIcon, {
                       originAerodromePrefix: origin_aerodrome.oaci_code,
@@ -101,7 +101,7 @@ export default function FlightList({legs}) {
                       availableSeats: item.available_seats,
                     })}
                     <Text style={styles.price}>
-                      R${currency(item.price_per_seat)} por assento
+                      R$ {currency(item.price_per_seat)} por assento
                     </Text>
                   </View>
                 </View>

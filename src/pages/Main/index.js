@@ -52,7 +52,7 @@ export default function Main({navigation}) {
           <TouchableOpacity
             style={styles.invited}
             onPress={() => {
-              navigation.navigate('HomeInvited');
+              navigation.navigate('HomeGuest');
             }}>
             <Text style={styles.invitedTxt}>Entrar como convidado</Text>
           </TouchableOpacity>

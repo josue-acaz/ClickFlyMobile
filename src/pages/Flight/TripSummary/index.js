@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Image, ScrollView, StyleSheet} from 'react-native';
+import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import {
   Screen,
   ArrowBack,

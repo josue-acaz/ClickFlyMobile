@@ -63,14 +63,18 @@ export default function Account() {
     },
   ];
 
+  function NotLoggedComponent(props) {
+    return (
+      <NotLogged {...props} title="Faça login para ver suas informações!" />
+    );
+  }
+
   return (
     <AccountStack.Navigator>
       {!signed ? (
         <AccountStack.Screen
           name="NotLogged"
-          component={() => (
-            <NotLogged title="Faça login para ver suas informações" />
-          )}
+          component={NotLoggedComponent}
           options={hideHeader}
         />
       ) : (

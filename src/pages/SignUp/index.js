@@ -43,6 +43,7 @@ export default function SignUp({navigation}) {
   const [submitted, setSubmitted] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('Não foi possível criar a conta.');
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false); // alert
   function handleSubmit() {
@@ -66,6 +67,9 @@ export default function SignUp({navigation}) {
       setProcessing(false);
     } catch (err) {
       // error
+      if (err.response.data.msg) {
+        setErrorMsg(err.response.data.msg);
+      }
       setError(true);
       setProcessing(false);
     }
@@ -92,7 +96,7 @@ export default function SignUp({navigation}) {
           processingMessage="Estamos criando sua conta!"
           error={error}
           errorTitle="Conta não criada!"
-          errorMessage="Não foi possível finalizar seu cadastro"
+          errorMessage={errorMsg}
           success={success}
           successTitle="Cadastro efetuado!"
           successMessage={

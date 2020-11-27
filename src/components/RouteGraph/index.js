@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {VerticalSpaceBetween, Inline} from '../../components';
-import {getDepartureDate, getAerodromeName, getTime} from '../../utils';
+import {getDatetime, getAerodromeName, getTime} from '../../utils';
 
 const OriginIcon = () => (
   <MaterialCommunityIcons
@@ -93,7 +93,7 @@ export default function RouteGraph({data}) {
                 <View>
                   <Text style={styles.day}>Sexta-Feira</Text>
                   <Text style={styles.departureDate}>
-                    {getDepartureDate(departure_datetime)}
+                    {getDatetime(departure_datetime)}
                   </Text>
                 </View>
               ),

@@ -40,6 +40,7 @@ import Helpers from './Helpers';
 import SlipPayment from './SlipPayment';
 import DecoratedButton from './DecoratedButton';
 import BookingItem from './BookingItem';
+import Ticket from './Ticket';
 
 export {
   Button,
@@ -84,4 +85,5 @@ export {
   SlipPayment,
   DecoratedButton,
   BookingItem,
+  Ticket,
 };

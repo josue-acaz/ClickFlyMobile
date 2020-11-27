@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, Image} from 'react-native';
 import {Bootstrap, Inline} from '../../components';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {getDepartureDate, currency} from '../../utils';
+import {getDatetime, currency} from '../../utils';
 
 const {Row, Col} = Bootstrap;
 
@@ -55,7 +55,7 @@ export default function LegSummary({
         </Col>
         <Col size="6">
           <Text style={styles.departureDate}>
-            {getDepartureDate(departure_datetime)}
+            {getDatetime(departure_datetime)}
           </Text>
           {getRouteLabel({
             origin_aerodrome_prefix: origin_aerodrome.oaci_code,

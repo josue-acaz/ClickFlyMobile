@@ -1,5 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import {useAuth} from '../../contexts/auth';
 
 import Client from './Client';
 import Passengers from './Passengers';
@@ -9,11 +10,14 @@ import ViewPay from './ViewPay';
 import ViewSlip from './ViewSlip';
 import AddPay from '../AddPay';
 import AddFriend from '../AddFriend';
+import NotLogged from '../NotLogged';
 
 const CheckoutStack = createStackNavigator();
 const hideHeader = {headerShown: false};
 
 export default function Checkout() {
+  const {signed} = useAuth();
+
   const routes = [
     {
       id: 1,
@@ -65,16 +69,28 @@ export default function Checkout() {
     },
   ];
 
+  function NotLoggedComponent(props) {
+    return <NotLogged {...props} title="Faça login para continuar!" />;
+  }
+
   return (
     <CheckoutStack.Navigator>
-      {routes.map((route) => (
+      {!signed ? (
         <CheckoutStack.Screen
-          key={route.id}
-          name={route.name}
-          component={route.component}
-          options={route.options}
+          name="NotLogged"
+          component={NotLoggedComponent}
+          options={hideHeader}
         />
-      ))}
+      ) : (
+        routes.map((route) => (
+          <CheckoutStack.Screen
+            key={route.id}
+            name={route.name}
+            component={route.component}
+            options={route.options}
+          />
+        ))
+      )}
     </CheckoutStack.Navigator>
   );
 }

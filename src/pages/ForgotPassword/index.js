@@ -33,6 +33,8 @@ export default function ForgotPassword({route, navigation}) {
 
   async function handleSubmit() {
     setSubmitted(true);
+    handleAlert({name: 'error', value: false});
+    handleAlert({name: 'success', value: false});
 
     if (email) {
       setLoading(true);
@@ -42,7 +44,7 @@ export default function ForgotPassword({route, navigation}) {
         handleAlert({name: 'success', value: true});
         handleAlert({name: 'open', value: true});
       } catch (error) {
-        console.log(error);
+        console.log(error.response);
         setLoading(false);
         handleAlert({name: 'error', value: true});
         handleAlert({name: 'open', value: true});
@@ -132,5 +134,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     textAlign: 'center',
+  },
+  bold: {
+    fontWeight: 'bold',
   },
 });
