@@ -10,6 +10,7 @@ import {
   Bootstrap,
   Center,
   DecoratedButton,
+  BottomSpace,
 } from '../../../components';
 import {maskBarCode} from '../../../utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -18,6 +19,17 @@ import Feather from 'react-native-vector-icons/Feather';
 import Share from 'react-native-share';
 import Clipboard from '@react-native-community/clipboard';
 import {CommonActions} from '@react-navigation/native';
+
+/**
+ * @field Single Sharing
+ * const options = {
+    title: 'ClickFly',
+    message: 'Boleto para pagamento',
+    url: booking.pdf,
+    social: Share.Social.WHATSAPP,
+    filename: 'boleto.pdf',
+  };
+ */
 
 const {Row, Col} = Bootstrap;
 
@@ -34,16 +46,13 @@ const ShareIcon = () => <Feather name="share-2" size={24} color="#09354B" />;
 export default function ViewSlip({navigation, route}) {
   const {booking} = route.params;
 
-  const options = {
-    title: 'ClickFly',
-    message: 'Boleto para pagamento',
-    url: booking.pdf,
-    social: Share.Social.WHATSAPP,
-    filename: 'boleto.pdf',
-  };
-
   const share = async () => {
-    await Share.shareSingle(options);
+    await Share.open({
+      title: 'ClickFly',
+      message: 'Boleto para pagamento',
+      url: booking.pdf,
+      filename: 'boleto.pdf',
+    });
   };
 
   const copyToClipboard = (text) => {
@@ -77,8 +86,8 @@ export default function ViewSlip({navigation, route}) {
           <SubsectionTitle text="Boleto" />
           <Subtitle text="Efetue o pagamento em até 24hrs" />
 
-          <Center style={styles.boleto}>
-            <Text style={styles.price}>R$ 600,00</Text>
+          <View style={styles.boleto}>
+          <Text style={styles.price}>R$ 600,00</Text>
             <Text style={styles.dueAt}>Vencimento 26 DEZ</Text>
 
             <Text style={styles.instructionsTxt}>
@@ -86,7 +95,8 @@ export default function ViewSlip({navigation, route}) {
               pagamento:
             </Text>
             <Text style={styles.barcode}>{maskBarCode(booking.line)}</Text>
-          </Center>
+          </View>
+          <BottomSpace />
         </ScrollView>
       </Screen>
       <BottomAction>
@@ -122,6 +132,7 @@ export default function ViewSlip({navigation, route}) {
 const styles = StyleSheet.create({
   boleto: {
     marginTop: '18%',
+    alignItems: 'center',
   },
   price: {
     fontSize: 24,
