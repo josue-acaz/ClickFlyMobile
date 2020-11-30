@@ -5,7 +5,7 @@ import Main from '../pages/Main';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import ForgotPassword from '../pages/ForgotPassword';
-import HomeGuest from '../pages/Home';
+import HomeGuest from './app.routes';
 
 const AuthStack = createStackNavigator();
 const hideHeader = {headerShown: false};

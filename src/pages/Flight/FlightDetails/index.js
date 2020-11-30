@@ -36,7 +36,10 @@ export default function FlightDetails({navigation, route}) {
   }
 
   function handleMoreAircraft(aircraft) {
-    navigation.navigate('Aircraft', {aircraft});
+    navigation.navigate('Aircraft', {
+      screen: 'ViewAircraft',
+      params: {aircraft},
+    });
   }
 
   return (
@@ -110,7 +113,7 @@ export default function FlightDetails({navigation, route}) {
               R$ {currency(calcSubtotal(flight.price_per_seat, seats))}
             </Text>
             <Text style={styles.seatsTxtOverlay}>
-              {flight.available_seats} assento selecionado
+              {seats} assentos selecionados
             </Text>
           </Col>
           <Col size="5">

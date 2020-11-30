@@ -11,10 +11,10 @@ import {
   Button,
   Alert,
   BottomSpace,
-} from '../../../components';
-import {consultZipcode} from '../../../services/extra';
-import {maskCep, rmEspecialCaracteres} from '../../../utils';
-import api from '../../../services/api';
+} from '../../components';
+import {consultZipcode} from '../../services/extra';
+import {maskCep, rmEspecialCaracteres} from '../../utils';
+import api from '../../services/api';
 
 export default function Address({navigation, route}) {
   const {customer, returnRoute} = route.params;
@@ -44,8 +44,9 @@ export default function Address({navigation, route}) {
   }
 
   useEffect(() => {
-    const address = customer.address;
-    if (address) {
+    if (customer.address) {
+      const address = customer.address;
+      console.log(address);
       Object.keys(address).forEach((el) => {
         handleChange({name: el, value: address[el]});
       });

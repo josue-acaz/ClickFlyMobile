@@ -42,6 +42,8 @@ import DecoratedButton from './DecoratedButton';
 import BookingItem from './BookingItem';
 import Ticket from './Ticket';
 import BottomSpace from './BottomSpace';
+import Installments from './Installments';
+import Slider from './Slider';
 
 export {
   Button,
@@ -88,4 +90,6 @@ export {
   BookingItem,
   Ticket,
   BottomSpace,
+  Installments,
+  Slider,
 };

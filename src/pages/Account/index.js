@@ -9,8 +9,9 @@ import AddFriend from '../AddFriend';
 import Menu from './Menu';
 import PersonalInformation from './PersonalInformation';
 import PaymentMethods from './PaymentMethods';
-import Address from './Address';
+import Address from '../Address';
 import Friends from './Friends';
+import Photo from './Photo';
 
 const AccountStack = createStackNavigator();
 const hideHeader = {headerShown: false};
@@ -59,6 +60,12 @@ export default function Account() {
       id: 7,
       name: 'AddFriend',
       component: AddFriend,
+      options: hideHeader,
+    },
+    {
+      id: 8,
+      name: 'Photo',
+      component: Photo,
       options: hideHeader,
     },
   ];

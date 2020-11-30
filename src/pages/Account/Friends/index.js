@@ -62,10 +62,14 @@ export default function Friends({navigation, route}) {
     handleAlert({name: 'open', value: true});
   }
 
+  function getSelecteds() {
+    return Object.keys(checked).filter((el) => checked[el]);
+  }
+
   async function handleDeleteSelections() {
     handleAlert({name: 'processing', value: true});
 
-    const selections = Object.keys(checked).filter((el) => checked[el]);
+    const selections = getSelecteds();
 
     try {
       await Promise.all(
@@ -122,9 +126,11 @@ export default function Friends({navigation, route}) {
     <Screen>
       <Alert
         open={alert.open}
-        title="Excluir selecionados"
-        message="Confirmar exclusão?"
+        title="Você deseja mesmo excluir os passageiros selecionados?"
+        message="Todos os dados salvos serão apagados do aplicativo."
         onConfirm={handleDeleteSelections}
+        colorConfirmBtn="#ff1a40"
+        colorCancelTxt="#ff1a40"
         onCancel={() => {
           handleAlert({name: 'open', value: false});
         }}
@@ -167,7 +173,9 @@ export default function Friends({navigation, route}) {
                     {
                       id: 1,
                       component: (
-                        <Text style={styles.selectedTxt}>2 selecionados</Text>
+                        <Text style={styles.selectedTxt}>
+                          {getSelecteds().length} selecionados
+                        </Text>
                       ),
                     },
                     {

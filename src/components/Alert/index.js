@@ -16,8 +16,11 @@ export default function Alert({
   onConfirm,
   onCancel,
   processing,
+  colorConfirmBtn = '#09354B',
+  colorCancelTxt = '#444444',
   processingTitle,
   processingMessage,
+  confirmTxt = 'Confimar',
   error,
   errorTitle,
   errorMessage,
@@ -46,14 +49,19 @@ export default function Alert({
               <Row>
                 <Col style={styles.colLeft} size="5">
                   <TouchableOpacity
-                    style={styles.confirmBtn}
+                    style={{
+                      ...styles.confirmBtn,
+                      backgroundColor: colorConfirmBtn,
+                    }}
                     onPress={onConfirm}>
-                    <Text style={styles.confirmTxt}>SIM</Text>
+                    <Text style={styles.confirmTxt}>{confirmTxt}</Text>
                   </TouchableOpacity>
                 </Col>
                 <Col style={styles.colRight} size="5">
                   <TouchableOpacity style={styles.cancelBtn} onPress={onCancel}>
-                    <Text style={styles.cancelTxt}>NÃO</Text>
+                    <Text style={{...styles.cancelTxt, color: colorCancelTxt}}>
+                      Agora não
+                    </Text>
                   </TouchableOpacity>
                 </Col>
               </Row>
@@ -102,50 +110,58 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#444444',
+    textAlign: 'center',
   },
   message: {
     fontSize: 16,
     color: '#666',
     marginTop: 10,
+    textAlign: 'center',
   },
   actions: {marginTop: 20},
   confirmBtn: {
-    backgroundColor: '#09354B',
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 5,
     width: '100%',
+    paddingTop: 15,
+    paddingBottom: 15,
   },
   confirmTxt: {
     color: '#ffffff',
     textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   cancelBtn: {
-    backgroundColor: '#999999',
     padding: 10,
     borderRadius: 10,
     width: '100%',
   },
   cancelTxt: {
-    color: '#ffffff',
     textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   titleAwait: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#444',
     marginTop: 10,
+    textAlign: 'center',
   },
   titleSuccess: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#09354B',
     marginTop: 10,
+    textAlign: 'center',
   },
   titleError: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#ff4d4d',
     marginTop: 10,
+    textAlign: 'center',
   },
   btn: {
     backgroundColor: '#09354B',
@@ -153,10 +169,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '100%',
     marginTop: 10,
+    paddingTop: 15,
+    paddingBottom: 15,
   },
   btnTxt: {
     color: '#ffffff',
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   footer: {
     width: '100%',

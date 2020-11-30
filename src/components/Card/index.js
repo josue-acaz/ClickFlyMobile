@@ -13,11 +13,11 @@ const MoreHorzIcon = () => (
   <MaterialIcons name="more-horiz" size={24} color="#09354B" />
 );
 const EditIcon = () => <Feather name="edit-3" size={24} color="#09354B" />;
-const TrashIcon = () => <Feather name="trash-2" size={24} color="#09354B" />;
+const TrashIcon = () => <Feather name="trash-2" size={24} color="#ff6680" />;
 
-export default function Card({card, style}) {
+export default function Card({card, style, onDelete}) {
   const {card_number, brand} = card;
-  const flag = findBrand(brand).img;
+  const {img, label} = findBrand(brand);
 
   const [openActions, setOpenActions] = useState(false);
   const handleOpenActions = () => {
@@ -33,7 +33,11 @@ export default function Card({card, style}) {
               <TouchableOpacity style={styles.editBtn}>
                 <EditIcon />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.rmBtn}>
+              <TouchableOpacity
+                onPress={() => {
+                  onDelete(card.id);
+                }}
+                style={styles.rmBtn}>
                 <TrashIcon />
               </TouchableOpacity>
             </View>
@@ -41,11 +45,13 @@ export default function Card({card, style}) {
         )}
         <Col size="6">
           <Text style={styles.title}>Cartão de Crédito</Text>
-          <Text style={styles.card_number}>{card_number}</Text>
+          <Text style={styles.card_number}>
+            {label.toUpperCase()} {card_number}
+          </Text>
         </Col>
         <Col size={openActions ? '2' : '4'} style={styles.colRight}>
           <View style={styles.actions}>
-            <Image style={styles.flag} source={flag} />
+            <Image style={styles.flag} source={img} />
             <TouchableOpacity
               style={styles.moreBtn}
               onPress={handleOpenActions}>

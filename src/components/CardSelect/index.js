@@ -103,7 +103,7 @@ export default function CardSelect({
                 ]}
               />
             </Col>
-            <Col size="5">
+            <Col style={styles.colRight} size="5">
               <SlimButton
                 text="Adicionar meio de pagamento"
                 onPress={() => {
@@ -150,6 +150,9 @@ const styles = StyleSheet.create({
   },
   cardFinal: {
     color: '#00B2A9',
+  },
+  colRight: {
+    alignItems: 'flex-end',
   },
   separator: {
     paddingBottom: 10,

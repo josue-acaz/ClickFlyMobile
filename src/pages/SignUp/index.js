@@ -85,8 +85,8 @@ export default function SignUp({navigation}) {
       <Screen>
         <Alert
           open={open}
-          title="Confirmar cadastro?"
-          message=""
+          title="Confirmar cadastro"
+          message="Deseja cadastrar-se?"
           onConfirm={handleSignUp}
           onCancel={() => {
             setOpen(false);
@@ -174,7 +174,11 @@ export default function SignUp({navigation}) {
             />
             <View style={styles.in}>
               <Input
-                placeholder="Seu nome completo"
+                placeholder={
+                  entityType === 'physical-entity'
+                    ? 'Seu nome completo'
+                    : 'Nome da empresa'
+                }
                 adorment={<UserIcon />}
                 autoCapitalize="words"
                 error={submitted && !inputs.name}

@@ -78,6 +78,8 @@ export default function ProvideInformation({navigation, route}) {
         data.entity.cnpj = rmEspecialCaracteres(inputs.cnpj);
       }
 
+      console.log(data);
+
       handleUpdate(customer.id, data);
     }
   }
@@ -91,7 +93,6 @@ export default function ProvideInformation({navigation, route}) {
     } catch (err) {
       // handle error
       handleProcessing();
-      console.error(err);
       Alert.alert('Erro', 'Ocorreu um erro ao atualizar os seus dados', [
         {
           text: 'OK',

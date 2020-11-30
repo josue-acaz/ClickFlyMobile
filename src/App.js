@@ -6,7 +6,7 @@ import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 import {AuthProvider} from './contexts/auth';
 import Routes from './routes';
 
-const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
+const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 10 : 0;
 
 export default function App() {
   React.useEffect(() => {

@@ -3,7 +3,12 @@ import {Text, View, StyleSheet} from 'react-native';
 import {Center} from '../../components';
 import {MaterialIndicator} from 'react-native-indicators';
 
-const Loader = ({title, subtitle, showText = true}) => (
+const Loader = ({
+  title,
+  subtitle,
+  showText = true,
+  indicatorColor = '#09354B',
+}) => (
   <Center>
     <View style={styles.content}>
       {showText && (
@@ -12,7 +17,7 @@ const Loader = ({title, subtitle, showText = true}) => (
           <Text style={styles.subtitle}>{subtitle}</Text>
         </View>
       )}
-      <MaterialIndicator color="#09354B" />
+      <MaterialIndicator color={indicatorColor} />
     </View>
   </Center>
 );

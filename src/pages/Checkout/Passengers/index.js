@@ -146,6 +146,12 @@ export default function Passengers({navigation, route}) {
                     }}
                   />
                 ))}
+              {passengers.length === 0 && (
+                <Text style={styles.noPassengers}>
+                  Nenhum passageiro disponível, por favor, adicione um para vêlo
+                  aqui!
+                </Text>
+              )}
             </View>
           </View>
           <BottomSpace />
@@ -189,5 +195,9 @@ const styles = StyleSheet.create({
   },
   passengers: {
     marginTop: 20,
+  },
+  noPassengers: {
+    fontSize: 20,
+    color: '#333',
   },
 });

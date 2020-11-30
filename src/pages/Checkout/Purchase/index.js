@@ -15,6 +15,7 @@ import {
   SlipPayment,
   BottomOverlay,
   Helpers,
+  Installments,
 } from '../../../components';
 import api from '../../../services/api';
 import {currency} from '../../../utils';
@@ -40,6 +41,7 @@ export default function Purchase({navigation, route}) {
   const [submitted, setSubmitted] = useState(false);
   const [customerCards, setCustomerCards] = useState([]);
   const [cardSelected, setCardSelected] = useState(null);
+  const [installments, setInstallments] = useState(1);
   const [method, setMethod] = useState('credit'); // Nos casos com compra em cartão
   function handleChangeMethod() {
     setMethod(method === 'credit' ? 'debit' : 'credit');
@@ -89,6 +91,8 @@ export default function Purchase({navigation, route}) {
   }
 
   function handleSubmit() {
+    handleAlert({name: 'error', value: false});
+    handleAlert({name: 'success', value: false});
     handleAlert({name: 'open', value: true});
   }
 
@@ -116,7 +120,7 @@ export default function Purchase({navigation, route}) {
 
         // Se for crédito, adicionar o parcelamento
         if (method === 'credit') {
-          data.payment.installments = 3;
+          data.payment.installments = installments;
         }
 
         break;
@@ -212,6 +216,14 @@ export default function Purchase({navigation, route}) {
               subtotal={subtotal}
               selected_seats={selected_seats}
             />
+            {payment_method === 'credit/debit' && method === 'credit' && (
+              <Installments
+                onSelect={(installment) => {
+                  setInstallments(installment);
+                }}
+                subtotal={subtotal}
+              />
+            )}
           </>
         )}
         <BottomOverlay visible={visible} handleVisible={handleVisible}>

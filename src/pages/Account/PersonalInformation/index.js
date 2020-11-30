@@ -104,7 +104,7 @@ export default function PersonalInformation({navigation, route}) {
       {
         id: 6,
         label: 'cnpj',
-        value: user.cnpj || '',
+        value: maskCnpj(user.cnpj) || '',
       },
       {
         id: 7,

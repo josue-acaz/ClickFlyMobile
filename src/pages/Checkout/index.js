@@ -11,6 +11,7 @@ import ViewSlip from './ViewSlip';
 import AddPay from '../AddPay';
 import AddFriend from '../AddFriend';
 import NotLogged from '../NotLogged';
+import Address from '../Address';
 
 const CheckoutStack = createStackNavigator();
 const hideHeader = {headerShown: false};
@@ -65,6 +66,12 @@ export default function Checkout() {
       id: 8,
       name: 'ViewSlip',
       component: ViewSlip,
+      options: hideHeader,
+    },
+    {
+      id: 9,
+      name: 'Address',
+      component: Address,
       options: hideHeader,
     },
   ];

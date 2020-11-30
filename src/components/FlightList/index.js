@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     width: width * 0.82,
-    height: height * 0.24,
+    height: height * 0.22,
     resizeMode: 'cover',
     borderRadius: 5,
   },

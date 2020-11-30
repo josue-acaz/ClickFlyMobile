@@ -1,20 +1,38 @@
 import React from 'react';
-import {ScrollView, StyleSheet} from 'react-native';
-import {Screen, ArrowBack, SubsectionTitle} from '../../components';
+import {createStackNavigator} from '@react-navigation/stack';
 
-export default function Aircraft({navigation, route}) {
+import ViewAircraft from './ViewAircraft';
+import Discover from './Discover';
+
+const AircraftStack = createStackNavigator();
+const hideHeader = {headerShown: false};
+
+export default function Aircraft() {
+  const routes = [
+    {
+      id: 1,
+      name: 'ViewAircraft',
+      component: ViewAircraft,
+      options: hideHeader,
+    },
+    {
+      id: 2,
+      name: 'Discover',
+      component: Discover,
+      options: hideHeader,
+    },
+  ];
+
   return (
-    <Screen>
-      <ScrollView>
-        <ArrowBack
-          onPress={() => {
-            navigation.goBack();
-          }}
+    <AircraftStack.Navigator>
+      {routes.map((route) => (
+        <AircraftStack.Screen
+          key={route.id}
+          name={route.name}
+          component={route.component}
+          options={route.options}
         />
-        <SubsectionTitle text="Detalhes de Aeronave" />
-      </ScrollView>
-    </Screen>
+      ))}
+    </AircraftStack.Navigator>
   );
 }
-
-const styles = StyleSheet.create({});

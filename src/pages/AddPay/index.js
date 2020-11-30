@@ -14,6 +14,7 @@ import {
   Alert,
   BottomOverlay,
   Helpers,
+  Label,
 } from '../../components';
 import {maskCardExpiry} from '../../utils';
 import api from '../../services/api';
@@ -121,6 +122,7 @@ export default function AddPay({navigation, route}) {
     if (alert.error) {
       navigation.goBack();
     } else {
+      console.log('Foi aqui...');
       navigation.navigate(returnRoute, {loading: true});
     }
   }
@@ -163,6 +165,7 @@ export default function AddPay({navigation, route}) {
             />
           </View>
           <View style={styles.form}>
+            <Label text="Número do cartão" />
             <CardInput
               value={inputs.card_number}
               placeholder="Número do cartão"
@@ -174,9 +177,10 @@ export default function AddPay({navigation, route}) {
             />
             <Row>
               <Col style={styles.colLeft} size="5">
+                <Label text="Validade" />
                 <Input
                   value={inputs.expires}
-                  placeholder="Validade MM/AA"
+                  placeholder="MM/AA"
                   onChangeText={(text) => {
                     if (text.length <= 5 || text === '') {
                       handleChange({
@@ -189,12 +193,13 @@ export default function AddPay({navigation, route}) {
                 />
               </Col>
               <Col style={styles.colRight} size="5">
+                <Label text="CVV" />
                 <LockInput
                   placeholder="CVV"
                   value={inputs.cvv}
                   keyboardType="numeric"
                   onChangeText={(text) => {
-                    if (text.length <= 3 || text === '') {
+                    if (text.length <= 4 || text === '') {
                       handleChange({
                         name: 'cvv',
                         value: text.replace(/\D/g, ''),
@@ -212,6 +217,7 @@ export default function AddPay({navigation, route}) {
                 />
               </Col>
             </Row>
+            <Label text="Nome do titular" />
             <Input
               value={inputs.holder_name}
               placeholder="Nome do titular"

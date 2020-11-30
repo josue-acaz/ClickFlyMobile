@@ -87,7 +87,7 @@ export default function ViewSlip({navigation, route}) {
           <Subtitle text="Efetue o pagamento em até 24hrs" />
 
           <View style={styles.boleto}>
-          <Text style={styles.price}>R$ 600,00</Text>
+            <Text style={styles.price}>R$ 600,00</Text>
             <Text style={styles.dueAt}>Vencimento 26 DEZ</Text>
 
             <Text style={styles.instructionsTxt}>

@@ -173,7 +173,7 @@ export default function RouteGraph({data}) {
 
 const styles = StyleSheet.create({
   routeGraph: {
-    paddingTop: '20%',
+    marginTop: '20%',
   },
   graphSymbol: {
     color: '#00B2A9',
@@ -183,6 +183,9 @@ const styles = StyleSheet.create({
   graph: {
     marginTop: 20,
     height: 200,
+  },
+  drawnGraph: {
+    height: '100%',
   },
   routeDetails: {
     height: 200,

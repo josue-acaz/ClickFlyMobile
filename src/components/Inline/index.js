@@ -11,7 +11,7 @@ export default function Inline({
     <View style={{...styles.inline, justifyContent: justify, ...style}}>
       {components.map((cmp) => (
         <View key={cmp.id} style={{...styles.cmp, ...cmpStyle}}>
-          {cmp.component || (<></>)}
+          {cmp.component || <></>}
         </View>
       ))}
     </View>

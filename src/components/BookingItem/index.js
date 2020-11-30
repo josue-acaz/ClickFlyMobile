@@ -33,39 +33,52 @@ export default function BookingItem({booking, handleShow}) {
           {
             id: 1,
             component: (
-              <View style={styles.passengers}>
-                <Inline
-                  components={[
-                    {
-                      id: 1,
-                      component: <SeatIcon style={styles.icon} />,
-                    },
-                    {
-                      id: 2,
-                      component: (
-                        <Text style={styles.seats}>{selected_seats}</Text>
-                      ),
-                    },
-                  ]}
-                />
-              </View>
-            ),
-          },
-          {
-            id: 2,
-            component: (
-              <View style={styles.informations}>
-                <Text style={styles.leg}>
-                  {origin_aerodrome.city.name} •{' '}
-                  {destination_aerodrome.city.name}
-                </Text>
-                <Text style={styles.departure}>
-                  {getDatetime(departure_datetime)}
-                </Text>
-                <Text style={styles.status}>
-                  {approved ? 'Aguardando embarque' : 'Pagamento pendente'}
-                </Text>
-              </View>
+              <Inline
+                components={[
+                  {
+                    id: 1,
+                    component: (
+                      <View style={styles.passengers}>
+                        <Inline
+                          components={[
+                            {
+                              id: 1,
+                              component: <SeatIcon style={styles.icon} />,
+                            },
+                            {
+                              id: 2,
+                              component: (
+                                <Text style={styles.seats}>
+                                  {selected_seats}
+                                </Text>
+                              ),
+                            },
+                          ]}
+                        />
+                      </View>
+                    ),
+                  },
+                  {
+                    id: 2,
+                    component: (
+                      <View style={styles.informations}>
+                        <Text style={styles.leg}>
+                          {origin_aerodrome.city.name} •{' '}
+                          {destination_aerodrome.city.name}
+                        </Text>
+                        <Text style={styles.departure}>
+                          {getDatetime(departure_datetime)}
+                        </Text>
+                        <Text style={styles.status}>
+                          {approved
+                            ? 'Aguardando embarque'
+                            : 'Pagamento pendente'}
+                        </Text>
+                      </View>
+                    ),
+                  },
+                ]}
+              />
             ),
           },
           {

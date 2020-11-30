@@ -237,6 +237,7 @@ export function mergeCustomer(customer) {
     ...customer[customer.type.replace('-', '_')],
     type: customer.type,
     customer_id,
+    id: customer.id,
   };
 
   return data;
@@ -244,12 +245,16 @@ export function mergeCustomer(customer) {
 
 export function objectValidation(object) {
   let isValid = true;
-  const arr = Object.keys(object);
-  arr.forEach((key) => {
-    if (!object[key]) {
-      isValid = false;
-    }
-  });
+  if (!object) {
+    isValid = false;
+  } else {
+    const arr = Object.keys(object);
+    arr.forEach((key) => {
+      if (!object[key]) {
+        isValid = false;
+      }
+    });
+  }
 
   return isValid;
 }
@@ -295,7 +300,7 @@ export function provideInformation(customer, paymentMethod) {
   }
 
   // Endereço do cliente
-  if (paymentMethod === 'boleto' && !objectValidation(address)) {
+  if (paymentMethod === 'boleto' && !address) {
     isProvide = true;
     steps.push({
       id,
@@ -354,4 +359,19 @@ export function maskBarCode(number) {
 export function getCityUF(aerodrome) {
   const {name, uf} = aerodrome.city;
   return `${name} • ${uf}`;
+}
+
+export function getExtFile(uri) {
+  return uri.split('.')[1];
+}
+
+export function getRandomString(length = 5) {
+  var result = '';
+  var characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 }

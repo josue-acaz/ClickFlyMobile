@@ -57,6 +57,7 @@ export default function Client({navigation, route}) {
 
   useEffect(() => {
     async function show(customer_id) {
+      setLoading(true);
       try {
         const response = await api.get(`customers/${customer_id}/show`);
         setCustomer(response.data);

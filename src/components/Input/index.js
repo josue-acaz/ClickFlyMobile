@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
     paddingLeft: 42,
   },
   adormentStart: {
-    bottom: 22,
+    bottom: 20,
     left: 14,
     zIndex: 9,
   },
   adormentEnd: {
-    bottom: 22,
+    bottom: 20,
     right: 14,
     zIndex: 9,
   },
