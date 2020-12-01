@@ -155,6 +155,7 @@ export default function AddFriend({navigation, route}) {
             <PickerInput
               value={inputs[document]}
               items={pickerItems}
+              keyboardType="numeric"
               placeholder="Documento de identificação"
               onChangeText={(text) => {
                 handleChange({name: document, value: text.replace(/\D/g, '')});
@@ -169,6 +170,8 @@ export default function AddFriend({navigation, route}) {
             <Input
               value={inputs.email}
               placeholder="Endereço de email"
+              keyboardType="email-address"
+              error={submitted && !inputs.email}
               onChangeText={(text) => {
                 handleChange({name: 'email', value: text});
               }}
@@ -177,6 +180,8 @@ export default function AddFriend({navigation, route}) {
             <Input
               value={inputs.phone}
               placeholder="Número de Telefone"
+              keyboardType="phone-pad"
+              error={submitted && !inputs.phone}
               onChangeText={(text) => {
                 if (text.length <= 14 || text === '') {
                   handleChange({name: 'phone', value: maskPhone(text)});
@@ -187,6 +192,8 @@ export default function AddFriend({navigation, route}) {
             <Input
               value={inputs.dob}
               placeholder="dd/mm/aaaa"
+              keyboardType="numeric"
+              error={submitted && !inputs.dob}
               onChangeText={(text) => {
                 if (text.length <= 10 || text === '') {
                   handleChange({name: 'dob', value: maskData(text)});

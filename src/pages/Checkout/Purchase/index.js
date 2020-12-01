@@ -148,7 +148,7 @@ export default function Purchase({navigation, route}) {
           navigation.navigate('ViewPay', {booking});
           break;
         case 'boleto':
-          navigation.navigate('ViewSlip', {booking});
+          navigation.navigate('ViewSlip', {booking, subtotal});
           break;
         default:
           break;

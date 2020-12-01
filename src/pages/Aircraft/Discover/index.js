@@ -15,7 +15,7 @@ export default function Discover({navigation, route}) {
   const {images} = route.params;
   return (
     <Screen>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <ArrowBack
           onPress={() => {
             navigation.goBack();

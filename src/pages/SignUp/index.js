@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TextInput} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -13,6 +13,7 @@ import {
   SubsectionTitle,
   Screen,
   BottomAction,
+  BottomSpace,
 } from '../../components';
 import api from '../../services/api';
 
@@ -193,6 +194,7 @@ export default function SignUp({navigation}) {
                 adorment={<EmailIcon />}
                 error={submitted && !inputs.email}
                 errorTxt="Campo obrigatório"
+                keyboardType="email-address"
                 value={inputs.email}
                 onChangeText={(text) => {
                   handleChange({name: 'email', value: text});
@@ -204,7 +206,6 @@ export default function SignUp({navigation}) {
                 error={submitted && !inputs.password}
                 errorTxt="Campo obrigatório"
                 value={inputs.password}
-                keyboardType="email-address"
                 secureTextEntry={true}
                 onChangeText={(text) => {
                   handleChange({name: 'password', value: text});
@@ -212,6 +213,7 @@ export default function SignUp({navigation}) {
               />
             </View>
           </View>
+          <BottomSpace />
         </ScrollView>
       </Screen>
       <BottomAction>

@@ -259,7 +259,7 @@ export default function PersonalInformation({navigation, route}) {
             )}
             <Label text="Número de Telefone" />
             <Input
-              keyboardType="number-pad"
+              keyboardType="phone-pad"
               placeholder="Telefone"
               value={inputs.phone}
               leftIcon={<PhoneIcon />}

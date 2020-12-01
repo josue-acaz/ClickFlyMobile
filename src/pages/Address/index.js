@@ -168,6 +168,7 @@ export default function Address({navigation, route}) {
               value={inputs.zipcode}
               placeholder="Informe seu CEP"
               error={submitted && !inputs.zipcode}
+              keyboardType="numeric"
               onBlur={() => {
                 handleConsultZip(inputs.zipcode);
               }}
@@ -217,10 +218,12 @@ export default function Address({navigation, route}) {
             <Label text="Estado*" />
             <Input
               value={inputs.uf}
-              placeholder="Estado"
+              placeholder="UF"
               error={submitted && !inputs.uf}
               onChangeText={(text) => {
-                handleChange({name: 'uf', value: text});
+                if (text.length <= 2 || text === '') {
+                  handleChange({name: 'uf', value: text.toUpperCase()});
+                }
               }}
             />
             <Label text="Complemento" />

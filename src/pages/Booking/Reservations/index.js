@@ -30,8 +30,6 @@ export default function Reservations({navigation, route}) {
       try {
         const response = await api.get(`/customer/${customer_id}/bookings`);
         setBookings(response.data);
-
-        console.log(response.data)
         setLoading(false);
       } catch (err) {
         console.error(err);

@@ -41,6 +41,7 @@ export default function LockInput({
       adormentPosition="end"
       placeholder={placeholder}
       helper={helper}
+      keyboardType={keyboardType}
       error={error}
       errorTxt={errorTxt}
       onHelp={onHelp}

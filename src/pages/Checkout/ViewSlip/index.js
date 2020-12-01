@@ -8,11 +8,10 @@ import {
   Button,
   Subtitle,
   Bootstrap,
-  Center,
   DecoratedButton,
   BottomSpace,
 } from '../../../components';
-import {maskBarCode} from '../../../utils';
+import {maskBarCode, formatShortDate, currency} from '../../../utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
@@ -44,7 +43,7 @@ const CheckIcon = () => (
 const ShareIcon = () => <Feather name="share-2" size={24} color="#09354B" />;
 
 export default function ViewSlip({navigation, route}) {
-  const {booking} = route.params;
+  const {booking, subtotal} = route.params;
 
   const share = async () => {
     await Share.open({
@@ -87,8 +86,10 @@ export default function ViewSlip({navigation, route}) {
           <Subtitle text="Efetue o pagamento em até 24hrs" />
 
           <View style={styles.boleto}>
-            <Text style={styles.price}>R$ 600,00</Text>
-            <Text style={styles.dueAt}>Vencimento 26 DEZ</Text>
+            <Text style={styles.price}>R$ {currency(subtotal)}</Text>
+            <Text style={styles.dueAt}>
+              Vencimento {formatShortDate(booking.due_at)}
+            </Text>
 
             <Text style={styles.instructionsTxt}>
               Utilize o número do código de barras abaixo para realizar o

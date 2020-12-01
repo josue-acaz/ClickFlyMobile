@@ -375,3 +375,12 @@ export function getRandomString(length = 5) {
   }
   return result;
 }
+
+export function formatShortDate(date) {
+  const datetime = parseISO(date);
+  const formatted = format(datetime, 'dd MMM', {
+    locale: ptBR,
+  });
+
+  return formatted.toUpperCase();
+}

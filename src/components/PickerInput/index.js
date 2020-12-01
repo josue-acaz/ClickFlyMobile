@@ -21,6 +21,7 @@ export default function PickerInput({
   picked,
   items = [],
   error,
+  keyboardType,
 }) {
   return (
     <View style={styles.pickerInput}>
@@ -28,6 +29,7 @@ export default function PickerInput({
         value={value}
         error={error}
         style={styles.input}
+        keyboardType={keyboardType}
         adorment={
           <RNPickerSelect
             Icon={DropdownIcon}
