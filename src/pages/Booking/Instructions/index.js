@@ -150,13 +150,11 @@ export default function Instructions({navigation, route}) {
   return (
     <Screen>
       {loading ? (
-        <Center>
-          <Loader
-            indicatorColor="#00B2A9"
-            title="Obtendo instruções..."
-            subtitle="Por favor, aguarde!"
-          />
-        </Center>
+        <Loader
+          indicatorColor="#00B2A9"
+          title="Obtendo instruções..."
+          subtitle="Por favor, aguarde!"
+        />
       ) : (
         <ScrollView>
           <ArrowBack
