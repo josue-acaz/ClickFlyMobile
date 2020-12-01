@@ -137,6 +137,8 @@ export default function Purchase({navigation, route}) {
       stretch_id: flight.id,
     };
 
+    console.log(headers);
+
     try {
       const response = await api.post('bookings', data, {headers});
       const booking = response.data;

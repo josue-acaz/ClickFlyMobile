@@ -19,7 +19,7 @@ import {
   SubsectionTitle,
   Instruction,
   Loader,
-  Center,
+  BottomSpace,
 } from '../../../components';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -253,6 +253,7 @@ export default function Instructions({navigation, route}) {
               )}
             </View>
           </View>
+          <BottomSpace />
         </ScrollView>
       )}
     </Screen>

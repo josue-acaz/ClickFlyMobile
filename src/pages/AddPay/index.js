@@ -15,6 +15,7 @@ import {
   BottomOverlay,
   Helpers,
   Label,
+  BottomSpace,
 } from '../../components';
 import {maskCardExpiry} from '../../utils';
 import api from '../../services/api';
@@ -227,6 +228,7 @@ export default function AddPay({navigation, route}) {
               error={submitted && !inputs.holder_name}
             />
           </View>
+          <BottomSpace />
         </ScrollView>
         <BottomOverlay visible={visible} handleVisible={handleVisible}>
           {helperName === 'AboutDebit' ? (

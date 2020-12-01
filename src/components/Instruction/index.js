@@ -1,6 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import {Inline} from '../../components';
+
+const {width} = Dimensions.get('screen');
 
 export default function Instruction({instruction, Icon}) {
   return (
@@ -28,6 +30,7 @@ export default function Instruction({instruction, Icon}) {
 const styles = StyleSheet.create({
   instruction: {
     marginBottom: 5,
+    width: width * 0.78,
   },
   indicator: {
     backgroundColor: '#fafafa',
@@ -43,5 +46,6 @@ const styles = StyleSheet.create({
   instructionTxt: {
     fontSize: 16,
     color: '#444',
+    textAlign: 'left',
   },
 });

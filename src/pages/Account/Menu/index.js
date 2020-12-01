@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {ListItem, Icon} from 'react-native-elements';
 import {MaterialIndicator} from 'react-native-indicators';
-import {Screen, Profile, Center} from '../../../components';
+import {Screen, Profile, Center, BottomSpace} from '../../../components';
 import {useAuth} from '../../../contexts/auth';
 import {useScreen} from '../../../contexts/screen';
 import api from '../../../services/api';
@@ -89,7 +89,7 @@ export default function Menu({navigation, route}) {
           <MaterialIndicator color="#09354B" />
         </Center>
       ) : (
-        <View>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {error ? (
             <Center>
               <Text style={styles.errorTxt}>Ocorreu em erro!</Text>
@@ -135,7 +135,8 @@ export default function Menu({navigation, route}) {
               </View>
             </>
           )}
-        </View>
+          <BottomSpace />
+        </ScrollView>
       )}
     </Screen>
   );

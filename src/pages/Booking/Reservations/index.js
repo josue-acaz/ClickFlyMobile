@@ -25,10 +25,13 @@ export default function Reservations({navigation, route}) {
 
   useEffect(() => {
     async function index(customer_id) {
+      console.log(customer_id);
       setLoading(true);
       try {
         const response = await api.get(`/customer/${customer_id}/bookings`);
         setBookings(response.data);
+
+        console.log(response.data)
         setLoading(false);
       } catch (err) {
         console.error(err);
