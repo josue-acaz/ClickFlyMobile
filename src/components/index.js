@@ -44,6 +44,8 @@ import Ticket from './Ticket';
 import BottomSpace from './BottomSpace';
 import Installments from './Installments';
 import Slider from './Slider';
+import DiscoverAircraft from './DiscoverAircraft';
+import Instruction from './Instruction';
 
 export {
   Button,
@@ -92,4 +94,6 @@ export {
   BottomSpace,
   Installments,
   Slider,
+  DiscoverAircraft,
+  Instruction,
 };

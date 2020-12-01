@@ -37,7 +37,7 @@ export default function FlightDetails({navigation, route}) {
 
   function handleMoreAircraft(aircraft) {
     navigation.navigate('Aircraft', {
-      screen: 'ViewAircraft',
+      screen: 'Airplane',
       params: {aircraft},
     });
   }

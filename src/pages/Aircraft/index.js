@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import ViewAircraft from './ViewAircraft';
+import Airplane from './Airplane';
 import Discover from './Discover';
 
 const AircraftStack = createStackNavigator();
@@ -11,8 +11,8 @@ export default function Aircraft() {
   const routes = [
     {
       id: 1,
-      name: 'ViewAircraft',
-      component: ViewAircraft,
+      name: 'Airplane',
+      component: Airplane,
       options: hideHeader,
     },
     {
