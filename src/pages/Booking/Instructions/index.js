@@ -18,6 +18,8 @@ import {
   ArrowBack,
   SubsectionTitle,
   Instruction,
+  Loader,
+  Center,
 } from '../../../components';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -147,100 +149,114 @@ export default function Instructions({navigation, route}) {
 
   return (
     <Screen>
-      <ScrollView>
-        <ArrowBack
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
-        <SubsectionTitle text="Instruções ao passageiro" />
-        <View style={styles.general_instructions}>
-          <View style={styles.company}>
-            <Text style={styles.company_txt}>
-              Este voo será operado por{' '}
-              <Text style={styles.companyName}>{op.user.name}</Text>
-            </Text>
-            <Text style={styles.email}>{op.user.email}</Text>
+      {loading ? (
+        <Center>
+          <Loader
+            indicatorColor="#00B2A9"
+            title="Obtendo instruções..."
+            subtitle="Por favor, aguarde!"
+          />
+        </Center>
+      ) : (
+        <ScrollView>
+          <ArrowBack
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+          <SubsectionTitle text="Instruções ao passageiro" />
+          <View style={styles.general_instructions}>
+            <View style={styles.company}>
+              <Text style={styles.company_txt}>
+                Este voo será operado por{' '}
+                <Text style={styles.companyName}>{op.user.name}</Text>
+              </Text>
+              <Text style={styles.email}>{op.user.email}</Text>
+            </View>
+
+            {instructions.map((instruction) => (
+              <Instruction
+                key={instruction.id}
+                Icon={instruction.Icon}
+                instruction={instruction.text}
+              />
+            ))}
           </View>
 
-          {instructions.map((instruction) => (
-            <Instruction
-              key={instruction.id}
-              Icon={instruction.Icon}
-              instruction={instruction.text}
-            />
-          ))}
-        </View>
-
-        <View style={styles.instructions_container}>
-          <View style={styles.instructions_header}>
-            <TouchableOpacity
-              onPress={() => {
-                if (!slider) {
-                  handleChangeSlider();
-                }
-              }}
-              style={{
-                ...getCurrentSliderStyle(slider),
-                ...styles.borderTopLeftRadius,
-              }}>
-              <Text
-                style={
-                  slider ? styles.btn_selected_txt : styles.btn_no_selected_txt
-                }>
-                Embarque
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                if (slider) {
-                  handleChangeSlider();
-                }
-              }}
-              style={{
-                ...getCurrentSliderStyle(!slider),
-                ...styles.borderTopRightRadius,
-              }}>
-              <Text
-                style={
-                  slider ? styles.btn_no_selected_txt : styles.btn_selected_txt
-                }>
-                Desembarque
-              </Text>
-            </TouchableOpacity>
+          <View style={styles.instructions_container}>
+            <View style={styles.instructions_header}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (!slider) {
+                    handleChangeSlider();
+                  }
+                }}
+                style={{
+                  ...getCurrentSliderStyle(slider),
+                  ...styles.borderTopLeftRadius,
+                }}>
+                <Text
+                  style={
+                    slider
+                      ? styles.btn_selected_txt
+                      : styles.btn_no_selected_txt
+                  }>
+                  Embarque
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  if (slider) {
+                    handleChangeSlider();
+                  }
+                }}
+                style={{
+                  ...getCurrentSliderStyle(!slider),
+                  ...styles.borderTopRightRadius,
+                }}>
+                <Text
+                  style={
+                    slider
+                      ? styles.btn_no_selected_txt
+                      : styles.btn_selected_txt
+                  }>
+                  Desembarque
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.instructions_content}>
+              <MapViewComponent slider={slider} />
+              {slider ? (
+                <View style={styles.boarding}>
+                  <Text style={styles.airport}>
+                    Aeroporto{' '}
+                    {capitalize(
+                      oA.name.split('/')[1] ? oA.name.split('/')[1] : oA.name,
+                    )}
+                  </Text>
+                  <Text style={styles.address}>
+                    <Text style={styles.bold}>Endereço: </Text>
+                    {originAddress}
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.landing}>
+                  <Text style={styles.airport}>
+                    Aeroporto{' '}
+                    {capitalize(
+                      dA.name.split('/')[1] ? dA.name.split('/')[1] : dA.name,
+                    )}
+                  </Text>
+                  <Text style={styles.address}>
+                    <Text style={styles.bold}>Endereço: </Text>
+                    {destinAddress}
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
-          <View style={styles.instructions_content}>
-            <MapViewComponent slider={slider} />
-            {slider ? (
-              <View style={styles.boarding}>
-                <Text style={styles.airport}>
-                  Aeroporto{' '}
-                  {capitalize(
-                    oA.name.split('/')[1] ? oA.name.split('/')[1] : oA.name,
-                  )}
-                </Text>
-                <Text style={styles.address}>
-                  <Text style={styles.bold}>Endereço: </Text>
-                  {originAddress}
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.landing}>
-                <Text style={styles.airport}>
-                  Aeroporto{' '}
-                  {capitalize(
-                    dA.name.split('/')[1] ? dA.name.split('/')[1] : dA.name,
-                  )}
-                </Text>
-                <Text style={styles.address}>
-                  <Text style={styles.bold}>Endereço: </Text>
-                  {destinAddress}
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      )}
     </Screen>
   );
 }
