@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, View, StyleSheet} from 'react-native';
-import {
-  Screen,
-  SetionTitle,
-  Loader,
-  Subtitle,
-  FlightList,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import SectionTitle from '../../../components/SectionTitle';
+import Loader from '../../../components/Loader';
+import Subtitle from '../../../components/Subtitle';
+import FlightList from '../../../components/FlightList';
+
 import api from '../../../services/api';
 
 export default function EmptyLegs({navigation, route}) {
@@ -16,7 +16,7 @@ export default function EmptyLegs({navigation, route}) {
   useEffect(() => {
     async function index() {
       try {
-        const response = await api.get('/empty_legs');
+        const response = await api.get('/shared-flights');
         setFlights(response.data);
         setLoading(false);
       } catch (err) {
@@ -34,7 +34,7 @@ export default function EmptyLegs({navigation, route}) {
         <Loader showText={false} />
       ) : (
         <ScrollView>
-          <SetionTitle text="Oportunidade de voos" align="left" />
+          <SectionTitle text="Compartilhe um voo" align="left" />
           <Subtitle text="Encontre a sua próxima viagem a um preço acessível" />
           <View style={styles.flightList}>
             {flights.map((flight) => (

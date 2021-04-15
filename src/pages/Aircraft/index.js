@@ -10,14 +10,12 @@ const hideHeader = {headerShown: false};
 export default function Aircraft() {
   const routes = [
     {
-      id: 1,
-      name: 'Airplane',
+      name: "Airplane",
       component: Airplane,
       options: hideHeader,
     },
     {
-      id: 2,
-      name: 'Discover',
+      name: "Discover",
       component: Discover,
       options: hideHeader,
     },
@@ -25,9 +23,9 @@ export default function Aircraft() {
 
   return (
     <AircraftStack.Navigator>
-      {routes.map((route) => (
+      {routes.map((route, index) => (
         <AircraftStack.Screen
-          key={route.id}
+          key={index}
           name={route.name}
           component={route.component}
           options={route.options}

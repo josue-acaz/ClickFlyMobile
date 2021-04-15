@@ -1,6 +1,6 @@
 import {format, parseISO} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
-import {brands} from '../constants';
+import {brands, EnumCustomerTypes} from '../constants';
 
 export function capitalize(str, lower = false) {
   return (lower ? str.toLowerCase() : str).replace(
@@ -9,7 +9,7 @@ export function capitalize(str, lower = false) {
   );
 }
 
-export function rmCPF(value) {
+export function readableCpf(value) {
   let cpf = '';
   if (!value) {
     return cpf;
@@ -29,7 +29,7 @@ export function rmDOB(value) {
   return dob;
 }
 
-export function rmEspecialCaracteres(value) {
+export function escapeCaracteres(value) {
   return value ? value.replace(/[^\d]+/g, '') : '';
 }
 
@@ -263,54 +263,57 @@ export function objectValidation(object) {
 export function provideInformation(customer, paymentMethod) {
   let id = 1;
   let steps = [];
-  let isProvide = false;
-  const data = mergeCustomer(customer);
-  const {customer_cards, address} = customer;
+  let is_provide = false;
+  const {type, cards, addresses} = customer;
 
-  switch (data.type) {
-    case 'physical-entity':
-      isProvide = !data.rg || !data.cpf || !data.phone || !data.dob;
+  switch (type) {
+    case EnumCustomerTypes.PF:
+      is_provide = !customer.phone_number 
+      || !customer.pf.rg 
+      || !customer.pf.cpf 
+      || !customer.pf.dob;
+
       break;
-    case 'legal-entity':
-      isProvide = !data.cnpj || !data.phone;
+    case EnumCustomerTypes.PJ:
+      is_provide = !customer.phone_number || !customer.pj.cnpj;
       break;
     default:
       break;
   }
 
   // Informações básica do cliente
-  if (isProvide) {
+  if (is_provide) {
     steps.push({
       id,
-      route: 'ProvideInformation',
+      route: "ProvideInformation",
     });
 
     id++;
   }
 
   // Meios de pagamento do cliente
-  if (paymentMethod === 'credit/debit' && customer_cards.length === 0) {
-    isProvide = true;
+  if (paymentMethod === "credit/debit" && cards.length === 0) {
+    is_provide = true;
     steps.push({
       id,
-      route: 'AddPay',
+      route: "AddPay",
     });
 
     id++;
   }
 
   // Endereço do cliente
-  if (paymentMethod === 'boleto' && !address) {
-    isProvide = true;
+  if (paymentMethod === "boleto" && addresses.length === 0) {
+    is_provide = true;
     steps.push({
       id,
-      route: 'Address',
+      route: "Address",
     });
 
     id++;
   }
 
-  return {isProvide, steps};
+  return ({is_provide, steps});
 }
 
 // Valida as entradas dinamicas em formulários (Provide Informations)
@@ -358,7 +361,7 @@ export function maskBarCode(number) {
 
 export function getCityUF(aerodrome) {
   const {name, uf} = aerodrome.city;
-  return `${name} • ${uf}`;
+  return `${name} • ${uf.prefix}`;
 }
 
 export function getExtFile(uri) {
@@ -383,4 +386,9 @@ export function formatShortDate(date) {
   });
 
   return formatted.toUpperCase();
+}
+
+export function getFormattedDatetime(date, date_format_type) {
+  const formatted = format(date, date_format_type, {locale: ptBR});
+  return formatted;
 }

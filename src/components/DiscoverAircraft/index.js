@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   Text,
   Image,
@@ -6,38 +6,23 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import {Inline} from '../../components';
+import Inline from '../../components/Inline';
 
-const {width} = Dimensions.get('screen');
+const {width} = Dimensions.get("screen");
 
-export default function DiscoverAircraft({
-  images = [],
-  handleDiscover = () => {},
-  legend = '',
-}) {
-  const [rows, setRows] = useState([]);
-
-  useEffect(() => {
-    for (let index = 0; index < 3; index++) {
-      const element = images[index];
-      setRows((rows) => [...rows, element]);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+export default function DiscoverAircraft({images, handleDiscover, legend}) {
   return (
     <TouchableOpacity onPress={handleDiscover} style={styles.discoverComponent}>
       <Inline
         justify="space-between"
-        components={rows.map((row, index) => {
+        components={images.map((aircraft_image, index) => {
           return {
-            id: row.id,
+            id: aircraft_image.id,
             component: (
               <Image
-                key={row.id}
+                key={index}
                 style={styles.thumb}
-                source={{uri: row.url}}
+                source={{uri: aircraft_image.file.url}}
               />
             ),
           };

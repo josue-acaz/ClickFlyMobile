@@ -1,7 +1,9 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Bootstrap, Inline, VerticalSpaceBetween} from '../../components';
+import Bootstrap from '../../components/Bootstrap';
+import Inline from '../../components/Inline';
+import VerticalSpaceBetween from '../../components/VerticalSpaceBetween';
 
 const {Row, Col} = Bootstrap;
 
@@ -67,7 +69,7 @@ export default function Aircraft({aircraft, onRequestMore}) {
             />
           </Col>
           <Col style={styles.colRight} size="5">
-            <Image style={styles.aircraftThumbnail} source={{uri: thumbnail}} />
+            <Image style={styles.aircraftThumbnail} source={{uri: thumbnail.url}} />
           </Col>
         </Row>
       </View>

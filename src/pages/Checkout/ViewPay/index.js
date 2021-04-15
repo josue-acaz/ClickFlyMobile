@@ -1,15 +1,15 @@
 import React from 'react';
 import {StyleSheet, View, Dimensions} from 'react-native';
 import {CommonActions} from '@react-navigation/native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  PayStatus,
-  Center,
-  Button,
-  BottomAction,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import PayStatus from '../../../components/PayStatus';
+import Center from '../../../components/Center';
+import Button from '../../../components/Button';
+import BottomAction from '../../../components/BottomAction';
+
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -43,27 +43,15 @@ export default function ViewPay({navigation, route}) {
           index: 0,
           routes: [
             {
-              name: 'Reservas',
-              params: {screen: 'Reservations', params: {loading: true}},
+              name: "Reservas",
+              params: {screen: "Reservations", params: {loading: true}},
             },
           ],
         }),
       );
     }
 
-    switch (status) {
-      case true:
-        navigateToBookings();
-        break;
-      case false:
-        navigateToBookings();
-        break;
-      case null:
-        navigateToBookings();
-        break;
-      default:
-        break;
-    }
+    navigateToBookings();
   }
 
   return (

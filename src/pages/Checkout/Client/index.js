@@ -1,31 +1,31 @@
 import React, {useEffect, useState} from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  Loader,
-  Center,
-  BottomAction,
-  Button,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import Loader from '../../../components/Loader';
+import Center from '../../../components/Center';
+import BottomAction from '../../../components/BottomAction';
+import Button from '../../../components/Button';
+
 import api from '../../../services/api';
 import {useAuth} from '../../../contexts/auth';
 import {
   provideInformation,
-  getFormattedCustomerType,
-  rmCPF,
+  readableCpf,
   maskCnpj,
 } from '../../../utils';
+import {EnumCustomerTypes} from '../../../constants';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const UserIcon = () => <FontAwesome name="user-o" size={24} color="#09354B" />;
 
 function ClientData({customer, payment_method}) {
   const document =
-    customer.type === 'physical-entity'
-      ? rmCPF(customer[getFormattedCustomerType(customer.type)].cpf)
-      : maskCnpj(customer[getFormattedCustomerType(customer.type)].cnpj);
+    customer.type === EnumCustomerTypes.PF
+      ? readableCpf(customer[customer.type].cpf)
+      : maskCnpj(customer[customer.type].cnpj);
 
   return (
     <View style={styles.client}>
@@ -33,12 +33,14 @@ function ClientData({customer, payment_method}) {
         <UserIcon />
       </View>
       <View style={styles.client}>
-        <Text style={styles.clientName}>{customer.user.name}</Text>
+        <Text style={styles.clientName}>{customer.name}</Text>
         <Text style={styles.payMethod}>
           Meio de pagamento:{' '}
           <Text style={styles.pay}>
             {payment_method === 'credit/debit'
               ? 'Cartão de Crédito/Débito'
+              : payment_method === 'pix' 
+              ? 'PIX' 
               : 'Boleto Bancário'}
           </Text>
         </Text>
@@ -53,15 +55,20 @@ export default function Client({navigation, route}) {
   const {payment_method} = route.params;
   const [loading, setLoading] = useState(true);
   const [customer, setCustomer] = useState(null);
-  const [provide, setProvide] = useState(null);
+  const [provide, setProvide] = useState({
+    is_provide: false,
+    steps: [],
+  });
 
   useEffect(() => {
     async function show(customer_id) {
-      setLoading(true);
       try {
         const response = await api.get(`customers/${customer_id}/show`);
         setCustomer(response.data);
-        setProvide(provideInformation(response.data, payment_method));
+
+        const provide_information = provideInformation(response.data, payment_method);
+        setProvide(provide_information);
+
         setLoading(false);
       } catch (err) {
         // handle error
@@ -69,33 +76,30 @@ export default function Client({navigation, route}) {
       }
     }
 
-    show(user.customer.id);
+    show(user.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params]);
 
   function handleNext() {
     // Necessário informações adicionais
-    if (provide.isProvide) {
-      const {steps} = provide;
-      navigation.navigate(steps[0].route, {
+    if (provide.is_provide) {
+      navigation.navigate(provide.steps[0].route, {
         ...route.params,
-        customer,
-        returnRoute: 'Client',
-        steps, // Passos a serem executados
+        customer: customer,
+        returnRoute: "Client",
+        steps: provide.steps, // Passos a serem executados
       });
       return;
     }
 
     // Seguinte
-    navigation.navigate('Passengers', {...route.params, customer});
+    navigation.navigate("Passengers", {...route.params, customer});
   }
 
   return (
     <>
       <Screen>
-        {loading ? (
-          <Loader showText={false} />
-        ) : (
+        {loading ? <Loader showText={false} /> : (
           <>
             <ArrowBack
               onPress={() => {
@@ -104,7 +108,7 @@ export default function Client({navigation, route}) {
             />
             <SubsectionTitle text="Dados do faturamento" />
             <Center style={styles.center}>
-              {provide.isProvide ? (
+              {provide.is_provide ? (
                 <Text style={styles.provideTxt}>
                   Você precisa fornecer informações adicionais.
                 </Text>

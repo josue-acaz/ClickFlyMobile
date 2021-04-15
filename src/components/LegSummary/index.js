@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
-import {Inline} from '../../components';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Inline from '../../components/Inline';
 import {getDatetime, currency} from '../../utils';
 
 const {width} = Dimensions.get('screen');
@@ -57,7 +57,7 @@ export default function LegSummary({
             component: (
               <Image
                 style={styles.thumbnail}
-                source={{uri: aircraft.thumbnail}}
+                source={{uri: aircraft.thumbnail.url}}
               />
             ),
           },

@@ -4,12 +4,13 @@ import {useAuth} from '../../contexts/auth';
 import NotLogged from '../NotLogged';
 import AddPay from '../AddPay';
 import AddFriend from '../AddFriend';
+import EditAddress from '../Address';
 
 // Inner Pages
 import Menu from './Menu';
 import PersonalInformation from './PersonalInformation';
 import PaymentMethods from './PaymentMethods';
-import Address from '../Address';
+import Addresses from './Addresses';
 import Friends from './Friends';
 import Photo from './Photo';
 
@@ -21,53 +22,50 @@ export default function Account() {
 
   const routes = [
     {
-      id: 1,
-      name: 'Menu',
+      name: "Menu",
       component: Menu,
       options: hideHeader,
     },
     {
-      id: 2,
-      name: 'PersonalInformation',
+      name: "PersonalInformation",
       component: PersonalInformation,
       options: hideHeader,
     },
     {
-      id: 3,
-      name: 'PaymentMethods',
+      name: "PaymentMethods",
       component: PaymentMethods,
       options: hideHeader,
     },
     {
-      id: 4,
-      name: 'AddPay',
+      name: "AddPay",
       component: AddPay,
       options: hideHeader,
     },
     {
-      id: 5,
-      name: 'Address',
-      component: Address,
+      name: "Addresses",
+      component: Addresses,
       options: hideHeader,
     },
     {
-      id: 6,
-      name: 'Friends',
+      name: "Friends",
       component: Friends,
       options: hideHeader,
     },
     {
-      id: 7,
-      name: 'AddFriend',
+      name: "AddFriend",
       component: AddFriend,
       options: hideHeader,
     },
     {
-      id: 8,
       name: 'Photo',
       component: Photo,
       options: hideHeader,
     },
+    {
+      name: 'EditAddress',
+      component: EditAddress,
+      options: hideHeader,
+    }
   ];
 
   function NotLoggedComponent(props) {
@@ -85,9 +83,9 @@ export default function Account() {
           options={hideHeader}
         />
       ) : (
-        routes.map((route) => (
+        routes.map((route, index) => (
           <AccountStack.Screen
-            key={route.id}
+            key={index}
             name={route.name}
             component={route.component}
             options={route.options}

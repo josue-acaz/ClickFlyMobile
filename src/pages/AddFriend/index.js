@@ -1,58 +1,54 @@
 import React, {useState} from 'react';
 import {ScrollView} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  Form,
-  Input,
-  BottomAction,
-  Button,
-  Label,
-  Alert,
-  PickerInput,
-  BottomSpace,
-} from '../../components';
-import api from '../../services/api';
+
+import Screen from '../../components/Screen';
+import ArrowBack from '../../components/ArrowBack';
+import SubsectionTitle from '../../components/SubsectionTitle';
+import Form from '../../components/Form';
+import Input from '../../components/Input';
+import BottomAction from '../../components/BottomAction';
+import Button from '../../components/Button';
+import Label from '../../components/Label';
+import PickerInput from '../../components/PickerInput';
+import BottomSpace from '../../components/BottomSpace';
+import Alert from '../../components/Alert';
 import {maskPhone, maskData, inDOB} from '../../utils';
+import api from '../../services/api';
 
 export default function AddFriend({navigation, route}) {
   const [submitted, setSubmitted] = useState(false);
-  const [document, setDocument] = useState('rg');
+  const [document, setDocument] = useState("rg");
   const {customer, returnRoute} = route.params;
   const [inputs, setInputs] = useState({
-    name: '',
-    email: '',
-    rg: '',
-    phone: '',
-    dob: '',
-    cnh: '',
-    ctps: '',
+    name: "",
+    email: "",
+    rg: "",
+    dob: "",
+    cnh: "",
+    ctps: "",
+    phone_number: "",
   });
 
   const pickerItems = [
     {
-      id: 1,
-      label: 'RG',
-      value: 'rg',
+      label: "RG",
+      value: "rg",
     },
     {
-      id: 2,
-      label: 'CNH',
-      value: 'cnh',
+      label: "CNH",
+      value: "cnh",
     },
     {
-      id: 3,
-      label: 'CTPS',
-      value: 'ctps',
+      label: "CTPS",
+      value: "ctps",
     },
   ];
 
   const [alert, setAlert] = useState({
     open: false,
-    processing: false,
     error: false,
     success: false,
+    processing: false,
   });
 
   function handleAlert(e) {
@@ -67,48 +63,50 @@ export default function AddFriend({navigation, route}) {
 
   function handleSubmit() {
     setSubmitted(true);
-    if (inputs.name && inputs.email && inputs.phone && inputs.dob) {
-      handleAlert({name: 'open', value: true});
+    if (inputs.name 
+      && inputs.email 
+      && inputs.phone_number 
+      && inputs.dob) {
+      handleAlert({name: "open", value: true});
     }
   }
 
   function handleAddFriend() {
-    let data = {
+    const data = {
       name: inputs.name,
       email: inputs.email,
-      phone: inputs.phone,
-      dob: inDOB(inputs.dob),
-      isFriend: true,
-      active: false,
+      phone_number: inputs.phone_number,
+      dob: inputs.dob.split("/").reverse().join("-"),
     };
 
     // Obtém o documento correspondente selecionado
     data[document] = inputs[document];
-    switch (returnRoute) {
-      case 'Passengers':
-        handleAlert({name: 'open', value: false});
-        navigation.navigate(returnRoute, {new_passenger: data});
-        break;
-      default:
-        handleAlert({name: 'processing', value: true});
-        AddToDatabse(data);
-        break;
-    }
+    create(data);
   }
 
-  async function AddToDatabse(data) {
+  async function create(data) {
+    handleAlert({name: "processing", value: true});
     try {
-      await api.post(`/customers/${customer.id}/friends`, data);
-      handleAlert({name: 'success', value: true});
-      handleAlert({name: 'processing', value: false});
+      const response = await api.post(`/customer-friends`, data);
+      handleAlert({name: "success", value: true});
+      handleAlert({name: "processing", value: false});
+
+      if(returnRoute === "Passengers") {
+        handleAlert({name: "open", value: false});
+        navigation.navigate(returnRoute, {new_passenger: {
+          ...response.data,
+          is_friend: true,
+          active: false,
+        }});
+      }
     } catch (err) {
-      handleAlert({name: 'error', value: true});
-      handleAlert({name: 'processing', value: false});
+      handleAlert({name: "error", value: true});
+      handleAlert({name: "processing", value: false});
     }
   }
 
   function handleFinish() {
-    handleAlert({name: 'open', value: false});
+    handleAlert({name: "open", value: false});
     navigation.navigate(returnRoute, {loading: true});
   }
 
@@ -121,7 +119,7 @@ export default function AddFriend({navigation, route}) {
           message="Adicionar novo passageiro?"
           onConfirm={handleAddFriend}
           onCancel={() => {
-            handleAlert({name: 'open', value: false});
+            handleAlert({name: "open", value: false});
           }}
           processing={alert.processing}
           processingTitle="Adicionando novo passageiro..."
@@ -147,7 +145,7 @@ export default function AddFriend({navigation, route}) {
               value={inputs.name}
               placeholder="Nome completo"
               onChangeText={(text) => {
-                handleChange({name: 'name', value: text});
+                handleChange({name: "name", value: text});
               }}
               error={submitted && !inputs.name}
             />
@@ -173,18 +171,18 @@ export default function AddFriend({navigation, route}) {
               keyboardType="email-address"
               error={submitted && !inputs.email}
               onChangeText={(text) => {
-                handleChange({name: 'email', value: text});
+                handleChange({name: "email", value: text});
               }}
             />
             <Label text="Número de telefone*" />
             <Input
-              value={inputs.phone}
+              value={inputs.phone_number}
               placeholder="Número de Telefone"
               keyboardType="phone-pad"
-              error={submitted && !inputs.phone}
+              error={submitted && !inputs.phone_number}
               onChangeText={(text) => {
                 if (text.length <= 14 || text === '') {
-                  handleChange({name: 'phone', value: maskPhone(text)});
+                  handleChange({name: "phone_number", value: maskPhone(text)});
                 }
               }}
             />

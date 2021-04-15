@@ -9,7 +9,13 @@ import {
   Alert,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-import {Screen, ArrowBack, Inline, Center, Loader} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import Inline from '../../../components/Inline';
+import Center from '../../../components/Center';
+import Loader from '../../../components/Loader';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import api from '../../../services/api';
 import {useScreen} from '../../../contexts/screen';
@@ -24,18 +30,18 @@ export default function Photo({navigation, route}) {
   const {customer} = route.params;
   const {handleRefresh} = useScreen();
   const [processing, setProcessing] = useState(false);
-  const [image, setImage] = useState(customer.user.thumbnail);
+  const [image, setImage] = useState(customer.thumbnail ? customer.thumbnail.url : user);
 
   function pickImage() {
     ImagePicker.showImagePicker(
       {
-        title: 'Selecione uma imagem',
-        cancelButtonTitle: 'cancelar',
-        chooseFromLibraryButtonTitle: 'Escolher da galeria',
-        takePhotoButtonTitle: 'Tirar uma foto',
+        title: "Selecione uma imagem",
+        cancelButtonTitle: "cancelar",
+        chooseFromLibraryButtonTitle: "Escolher da galeria",
+        takePhotoButtonTitle: "Tirar uma foto",
         storageOptions: {
           skipBackup: true,
-          path: 'images',
+          path: "images",
         },
       },
       handleSubmit,
@@ -125,7 +131,7 @@ export default function Photo({navigation, route}) {
           {processing ? (
             <Loader indicatorColor="#FFFFFF" />
           ) : (
-            <Image source={image ? {uri: image} : user} style={styles.img} />
+            <Image source={image} style={styles.img} />
           )}
         </View>
       </Center>

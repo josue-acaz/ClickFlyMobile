@@ -1,24 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {
-  Screen,
-  SubsectionTitle,
-  ArrowBack,
-  LegSummary,
-  BottomAction,
-  Button,
-  Inline,
-  VerticalSpaceBetween,
-  CardSelect,
-  Loader,
-  Alert,
-  SlipPayment,
-  BottomOverlay,
-  Helpers,
-  Installments,
-} from '../../../components';
-import api from '../../../services/api';
+
+import Screen from '../../../components/Screen';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import ArrowBack from '../../../components/ArrowBack';
+import LegSummary from '../../../components/LegSummary';
+import BottomAction from '../../../components/BottomAction';
+import Button from '../../../components/Button';
+import Inline from '../../../components/Inline';
+import VerticalSpaceBetween from '../../../components/VerticalSpaceBetween';
+import CardSelect from '../../../components/CardSelect';
+import Loader from '../../../components/Loader';
+import Alert from '../../../components/Alert';
+import SlipPayment from '../../../components/SlipPayment';
+import BottomOverlay from '../../../components/BottomOverlay';
+import Helpers from '../../../components/Helpers';
+import Installments from '../../../components/Installments';
+
 import {currency} from '../../../utils';
+import api from '../../../services/api';
+import {EnumPaymentMethods} from '../../../constants';
 
 export default function Purchase({navigation, route}) {
   const {
@@ -42,9 +43,9 @@ export default function Purchase({navigation, route}) {
   const [customerCards, setCustomerCards] = useState([]);
   const [cardSelected, setCardSelected] = useState(null);
   const [installments, setInstallments] = useState(1);
-  const [method, setMethod] = useState('credit'); // Nos casos com compra em cartão
+  const [method, setMethod] = useState(EnumPaymentMethods.CREDIT_CARD); // Nos casos com compra em cartão
   function handleChangeMethod() {
-    setMethod(method === 'credit' ? 'debit' : 'credit');
+    setMethod(method === EnumPaymentMethods.CREDIT_CARD ? EnumPaymentMethods.DEBIT_CARD : EnumPaymentMethods.CREDIT_CARD);
   }
 
   const [alert, setAlert] = useState({
@@ -69,9 +70,9 @@ export default function Purchase({navigation, route}) {
 
   useEffect(() => {
     setLoading(true);
-    async function index(customer_id) {
+    async function index() {
       try {
-        const response = await api.get(`/customers/${customer_id}/cards`);
+        const response = await api.get(`/customer-cards`);
         const cards = response.data;
         setCustomerCards(cards);
         setCardSelected(cards[cards.length - 1]); // Pega o último cartão
@@ -82,88 +83,64 @@ export default function Purchase({navigation, route}) {
       }
     }
 
-    index(customer.id);
+    index();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params]);
 
   function handleAddPayment() {
-    navigation.navigate('AddPay', {customer, returnRoute: 'Purchase'});
+    navigation.navigate("AddPay", {customer, returnRoute: "Purchase"});
   }
 
   function handleSubmit() {
-    handleAlert({name: 'error', value: false});
-    handleAlert({name: 'success', value: false});
-    handleAlert({name: 'open', value: true});
+    handleAlert({name: "error", value: false});
+    handleAlert({name: "success", value: false});
+    handleAlert({name: "open", value: true});
   }
 
   async function handleBooking() {
     setSubmitted(true);
     setLoading(true);
-    handleAlert({name: 'open', value: false});
+    handleAlert({name: "open", value: false});
 
-    let data = {
-      booking: {
-        selected_seats,
-        customer_bookings: passengers,
-      },
-      payment: {
-        amount: subtotal,
-      },
-    };
-
-    switch (payment_method) {
-      case 'credit/debit':
-        data.payment.payment_method = `${method}_card`;
-        data.payment[`${method}_card`] = {
-          id: cardSelected.id,
-        };
-
-        // Se for crédito, adicionar o parcelamento
-        if (method === 'credit') {
-          data.payment.installments = installments;
-        }
-
-        break;
-      case 'boleto':
-        data.payment.payment_method = 'boleto';
-        data.payment.address = customer.address;
-        break;
-      default:
-        break;
-    }
-
-    const headers = {
-      customer_id: customer.id,
-      stretch_id: flight.id,
-    };
-
-    console.log(headers);
+    const data = {passengers};
 
     try {
-      const response = await api.post('bookings', data, {headers});
+      const response = await api.post("bookings", data, {
+        headers: {
+          customer_card_id: cardSelected.id,
+          flight_segment_id: flight.id,
+          payment_method: method,
+          installments: installments,
+        }
+      });
+
       const booking = response.data;
 
       switch (payment_method) {
-        case 'credit/debit':
-          navigation.navigate('ViewPay', {booking});
+        case "credit/debit":
+          navigation.navigate("ViewPay", {booking});
           break;
-        case 'boleto':
-          navigation.navigate('ViewSlip', {booking, subtotal});
+        case "pix":
+          navigation.navigate("ViewPix", {booking});
+          break;
+        case "boleto":
+          navigation.navigate("ViewSlip", {booking, subtotal});
           break;
         default:
           break;
       }
       setLoading(false);
     } catch (err) {
-      handleAlert({name: 'error', value: true});
-      handleAlert({name: 'open', value: true});
+      console.error(err);
+      handleAlert({name: "error", value: true});
+      handleAlert({name: "open", value: true});
       setLoading(false);
     }
   }
 
   // Fecha alert se o pagamento falhar
   function handleOk() {
-    handleAlert({name: 'open', value: false});
+    handleAlert({name: "open", value: false});
   }
 
   return (
@@ -171,23 +148,15 @@ export default function Purchase({navigation, route}) {
       <Screen>
         <Alert
           open={alert.open}
-          title={
-            payment_method === 'credit/debit'
-              ? 'Finalizar compra'
-              : 'Finalizar reserva'
-          }
+          title="Efetuar reserva"
           message={
-            payment_method === 'credit/debit'
-              ? `Confirmar a reserva e efetuar o pagamento no valor de R$ ${currency(
-                  subtotal,
-                )}?`
-              : `Gerar o boleto de pagamento no valor de R$ ${currency(
-                  subtotal,
-                )}?`
+            payment_method === "credit/debit" || payment_method === "pix"
+              ? `Confirmar a reserva e efetuar o pagamento no valor de R$ ${currency(subtotal)}?`
+              : `Gerar o boleto de pagamento no valor de R$ ${currency(subtotal)}?`
           }
           onConfirm={handleBooking}
           onCancel={() => {
-            handleAlert({name: 'open', value: false});
+            handleAlert({name: "open", value: false});
           }}
           success={alert.success}
           successTitle="Boleto gerado!"
@@ -198,10 +167,12 @@ export default function Purchase({navigation, route}) {
           onOk={handleOk}
         />
         {loading ? (
-          <Loader
-            title={submitted ? 'Efetuando reserva...' : ''}
-            subtitle={submitted ? 'Por favor, aguarde!' : ''}
-          />
+          submitted && (
+            <Loader
+              title="Efetuando reserva..."
+              subtitle="Por favor, aguarde!"
+            />
+          )
         ) : (
           <>
             <ArrowBack
@@ -218,7 +189,7 @@ export default function Purchase({navigation, route}) {
               subtotal={subtotal}
               selected_seats={selected_seats}
             />
-            {payment_method === 'credit/debit' && method === 'credit' && (
+            {payment_method === "credit/debit" && method === EnumPaymentMethods.CREDIT_CARD && (
               <Installments
                 onSelect={(installment) => {
                   setInstallments(installment);
@@ -263,7 +234,7 @@ export default function Purchase({navigation, route}) {
                 {
                   id: 2,
                   component:
-                    payment_method === 'credit/debit' ? (
+                    payment_method === "credit/debit" ? (
                       <CardSelect
                         cards={customerCards}
                         cardSelected={cardSelected}

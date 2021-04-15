@@ -8,49 +8,52 @@ import hipercard from '../assets/hipercard.png';
 import aura from '../assets/aura.png';
 import elo from '../assets/elo.png';
 
+const EnumCustomerTypes = Object.freeze({
+  PF: "pf",
+  PJ: "pj",
+});
+
+const EnumPaymentMethods = Object.freeze({
+  CREDIT_CARD: "credit_card",
+  DEBIT_CARD: "debit_card",
+  BOLETO: "boleto",
+  PIX: "pix",
+});
+
 const brands = [
   {
-    id: 1,
-    label: 'Amex',
-    img: amex,
-  },
-  {
-    id: 2,
     label: 'Visa',
     img: visa,
   },
   {
-    id: 3,
-    label: 'Diners',
-    img: diners,
-  },
-  {
-    id: 4,
-    label: 'JCB',
-    img: jcb,
-  },
-  {
-    id: 5,
     label: 'Mastercard',
     img: master,
   },
   {
-    id: 6,
+    label: 'Amex',
+    img: amex,
+  },
+  {
+    label: 'Diners',
+    img: diners,
+  },
+  {
+    label: 'JCB',
+    img: jcb,
+  },
+  {
     label: 'Discover',
     img: discover,
   },
   {
-    id: 7,
     label: 'Hipercard',
     img: hipercard,
   },
   {
-    id: 8,
     label: 'Elo',
     img: elo,
   },
   {
-    id: 9,
     label: 'Aura',
     img: aura,
   },
@@ -217,4 +220,16 @@ const mapstyle = [
   },
 ];
 
-export {brands, mapstyle};
+const EnumDateFormatTypes = Object.freeze({
+  SQL: "yyyy'-'MM'-'dd", // 2021-08-14
+  READABLE_V1: "dd 'de' MMMM 'de' yyyy", // 14 de Agosto de 2021
+  READABLE_V2: "dd'/'MM'/'yyyy",
+});
+
+export {
+  brands, 
+  mapstyle,
+  EnumCustomerTypes,
+  EnumPaymentMethods,
+  EnumDateFormatTypes
+};

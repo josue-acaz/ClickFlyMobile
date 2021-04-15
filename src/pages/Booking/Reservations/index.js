@@ -1,35 +1,43 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, ScrollView, Text, View, Image} from 'react-native';
-import {
-  Screen,
-  SetionTitle,
-  Subtitle,
-  Loader,
-  Center,
-  BookingItem,
-  BottomOverlay,
-  Helpers,
-} from '../../../components';
-import {useAuth} from '../../../contexts/auth';
+
+import Screen from '../../../components/Screen';
+import SectionTitle from '../../../components/SectionTitle';
+import Subtitle from '../../../components/Subtitle';
+import Loader from '../../../components/Loader';
+import Center from '../../../components/Center';
+import BookingItem from '../../../components/BookingItem';
+import BottomOverlay from '../../../components/BottomOverlay';
+import Helpers from '../../../components/Helpers';
+
 import api from '../../../services/api';
 import ticket from '../../../assets/ticket.png';
 
 export default function Reservations({navigation, route}) {
-  const {user} = useAuth();
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
   const [visible, setVisible] = useState(false);
+
   function handleVisible() {
     setVisible(!visible);
   }
 
   useEffect(() => {
-    async function index(customer_id) {
-      console.log(customer_id);
+    async function index() {
       setLoading(true);
       try {
-        const response = await api.get(`/customer/${customer_id}/bookings`);
-        setBookings(response.data);
+        const response = await api.get(`/bookings`, {
+          params: {
+            text: "",
+            limit: 10,
+            offset: 0,
+            order: "DESC",
+            order_by: "created_at"
+          }
+        });
+
+        const {rows, count} = response.data;
+        setBookings(rows);
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -37,19 +45,19 @@ export default function Reservations({navigation, route}) {
       }
     }
 
-    index(user.customer.id);
+    index();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params]);
 
   const Header = () => (
     <>
-      <SetionTitle align="left" text="Minhas reservas" />
-      <Subtitle text="Gerencie as suas reservas" />
+      <SectionTitle align="left" text="Minhas reservas" />
+      <Subtitle text="Gerencie aqui suas reservas" />
     </>
   );
 
   function handleShow(booking) {
-    navigation.navigate('Tickets', {booking});
+    navigation.navigate("Tickets", {booking});
   }
 
   return (

@@ -2,7 +2,8 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {VerticalSpaceBetween, Inline} from '../../components';
+import Inline from '../../components/Inline';
+import VerticalSpaceBetween from '../../components/VerticalSpaceBetween';
 import {getDatetime, getAerodromeName, getTime} from '../../utils';
 
 const OriginIcon = () => (

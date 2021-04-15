@@ -15,7 +15,7 @@ export default function Slider({images = []}) {
       keyExtractor={(item) => item.id + ''}
       renderItem={({item}, index) => (
         <View style={styles.item}>
-          <Image style={styles.image} source={{uri: item.url}} />
+          <Image style={styles.image} source={{uri: item.file.url}} />
         </View>
       )}
     />

@@ -24,8 +24,7 @@ export default function Home() {
 
   const routes = [
     {
-      id: 1,
-      name: 'Voar',
+      name: "Voar",
       component: Flight,
       options: ({route}) => {
         const routeName = getFocusedRouteNameFromRoute(route);
@@ -35,8 +34,7 @@ export default function Home() {
       },
     },
     {
-      id: 2,
-      name: 'Reservas',
+      name: "Reservas",
       component: Booking,
       options: ({route}) => {
         const routeName = getFocusedRouteNameFromRoute(route);
@@ -46,8 +44,7 @@ export default function Home() {
       },
     },
     {
-      id: 3,
-      name: 'Conta',
+      name: "Conta",
       component: Account,
       options: ({route}) => {
         const routeName = getFocusedRouteNameFromRoute(route);
@@ -65,13 +62,13 @@ export default function Home() {
         screenOptions={({route}) => ({
           tabBarIcon: ({color, size}) => {
             switch (route.name) {
-              case 'Voar':
+              case "Voar":
                 return (
                   <MaterialIcons name="flight" size={size} color={color} />
                 );
-              case 'Conta':
+              case "Conta":
                 return <FontAwesome name="user-o" size={size} color={color} />;
-              case 'Reservas':
+              case "Reservas":
                 return <FontAwesome name="ticket" size={size} color={color} />;
               default:
                 break;
@@ -79,11 +76,11 @@ export default function Home() {
           },
         })}
         tabBarOptions={tabBarOptions}>
-        {routes.map(function (route) {
+        {routes.map(function (route, index) {
           return (
-            (!(route.name === 'Reservas') || signed) && (
+            (!(route.name === "Reservas") || signed) && (
               <HomeTab.Screen
-                key={route.id}
+                key={index}
                 name={route.name}
                 component={route.component}
                 options={route.options}

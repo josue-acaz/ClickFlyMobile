@@ -1,44 +1,40 @@
 import React, {useState} from 'react';
 import {ScrollView, Alert} from 'react-native';
-import {
-  Form,
-  Label,
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  BottomAction,
-  Button,
-} from '../../../components';
+
+import Form from '../../../components/Form';
+import Label from '../../../components/Label';
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import BottomAction from '../../../components/BottomAction';
+import Button from '../../../components/Button';
+
 import {Input} from 'react-native-elements';
 import api from '../../../services/api';
 import {
-  mergeCustomer,
-  rmEspecialCaracteres,
-  dynamicValidation,
+  escapeCaracteres,
   maskPhone,
   maskCnpj,
   maskCpf,
   maskData,
-  inDOB,
-  inCPF,
-  removeFromArray,
 } from '../../../utils';
+import {EnumCustomerTypes} from '../../../constants';
 
 export default function ProvideInformation({navigation, route}) {
-  const {returnRoute, steps} = route.params;
-  const customer = mergeCustomer(route.params.customer);
+  const {returnRoute, steps, customer} = route.params;
   const [submitted, setSubmitted] = useState(false);
   const [processing, setProcessing] = useState(false);
   function handleProcessing() {
     setProcessing(!processing);
   }
   const [inputs, setInputs] = useState({
-    cpf: '',
-    rg: '',
-    dob: '',
-    phone: '',
-    cnpj: '',
+    cpf: "",
+    rg: "",
+    dob: "",
+    phone_number: "",
+    cnpj: "",
   });
+
   function handleChange(e) {
     const {name, value} = e;
     setInputs((inputs) => ({...inputs, [name]: value}));
@@ -46,56 +42,46 @@ export default function ProvideInformation({navigation, route}) {
 
   function handleSubmit() {
     setSubmitted(true);
-    const isValid = dynamicValidation(
-      customer,
-      inputs,
-      customer.type === 'physical-entity' ? ['cnpj'] : ['cpf', 'rg', 'dob'],
-    );
-    if (isValid) {
-      let data = {
-        customer: {},
-        entity: {},
-        user: {},
-      };
+    let data = {};
 
-      if (inputs.cpf) {
-        data.entity.cpf = inCPF(inputs.cpf);
-      }
-
-      if (inputs.dob) {
-        data.entity.dob = inDOB(inputs.dob);
-      }
-
-      if (inputs.rg) {
-        data.entity.rg = inputs.rg;
-      }
-
-      if (inputs.phone) {
-        data.user.phone = inputs.phone;
-      }
-
-      if (inputs.cnpj) {
-        data.entity.cnpj = rmEspecialCaracteres(inputs.cnpj);
-      }
-
-      console.log(data);
-
-      handleUpdate(customer.id, data);
+    if(!inputs.phone_number) {
+      return;
     }
+
+    data.phone_number = escapeCaracteres(inputs.phone_number);
+
+    if(customer.type === EnumCustomerTypes.PF) {
+      if(!inputs.rg || !inputs.dob || !inputs.cpf) {
+        return;
+      }
+
+      data.rg = inputs.rg;
+      data.dob = inputs.dob.split("/").reverse().join("-");
+      data.cpf = escapeCaracteres(inputs.cpf);
+
+    } else if(customer.type === EnumCustomerTypes.PJ) {
+      if(!inputs.cnpj) {
+        return;
+      }
+
+      data.cnpj = escapeCaracteres(inputs.cnpj);
+    }
+
+    handleUpdate(customer.id, {type: customer.type, data});
   }
 
-  async function handleUpdate(customer_id, data) {
+  async function handleUpdate(customer_id, {type, data}) {
     handleProcessing();
     try {
-      await api.put(`/customers/${customer_id}/update`, data);
+      await api.put(`/customers/${customer_id}/${type}/update`, data);
       handleProcessing();
       handleNext();
     } catch (err) {
       // handle error
       handleProcessing();
-      Alert.alert('Erro', 'Ocorreu um erro ao atualizar os seus dados', [
+      Alert.alert("Erro", "Ocorreu um erro ao atualizar os seus dados", [
         {
-          text: 'OK',
+          text: "OK",
           onPress: () => {
             navigation.goBack();
           },
@@ -124,38 +110,38 @@ export default function ProvideInformation({navigation, route}) {
           />
           <SubsectionTitle text="Forneça seus dados" />
           <Form>
-            {customer.type === 'physical-entity' ? (
+            {customer.type === EnumCustomerTypes.PF ? (
               <>
-                {!customer.cpf && (
+                {!customer.pf.cpf && (
                   <>
                     <Label text="Informe seu CPF" />
                     <Input
                       value={inputs.cpf}
                       placeholder="CPF"
                       errorMessage={
-                        submitted && !inputs.cpf ? 'Campo obrigatório' : ''
+                        submitted && !inputs.cpf ? "Campo obrigatório" : ""
                       }
                       onChangeText={(text) => {
-                        if (text.length <= 14 || text === '') {
-                          handleChange({name: 'cpf', value: maskCpf(text)});
+                        if (text.length <= 14 || text === "") {
+                          handleChange({name: "cpf", value: maskCpf(text)});
                         }
                       }}
                       keyboardType="numeric"
                     />
                   </>
                 )}
-                {!customer.rg && (
+                {!customer.pf.rg && (
                   <>
                     <Label text="Informe seu RG" />
                     <Input
                       value={inputs.rg}
                       placeholder="RG"
                       errorMessage={
-                        submitted && !inputs.rg ? 'Campo obrigatório' : ''
+                        submitted && !inputs.rg ? "Campo obrigatório" : ""
                       }
                       onChangeText={(text) => {
                         handleChange({
-                          name: 'rg',
+                          name: "rg",
                           value: text.replace(/\D/g, ''),
                         });
                       }}
@@ -163,18 +149,18 @@ export default function ProvideInformation({navigation, route}) {
                     />
                   </>
                 )}
-                {!customer.dob && (
+                {!customer.pf.dob && (
                   <>
                     <Label text="Data de nascimento" />
                     <Input
                       value={inputs.dob}
                       errorMessage={
-                        submitted && !inputs.dob ? 'Campo obrigatório' : ''
+                        submitted && !inputs.dob ? "Campo obrigatório" : ""
                       }
                       placeholder="Data de nascimento"
                       onChangeText={(text) => {
                         if (text.length <= 10 || text === '') {
-                          handleChange({name: 'dob', value: maskData(text)});
+                          handleChange({name: "dob", value: maskData(text)});
                         }
                       }}
                       keyboardType="number-pad"
@@ -184,18 +170,18 @@ export default function ProvideInformation({navigation, route}) {
               </>
             ) : (
               <>
-                {!customer.cnpj && (
+                {!customer.pj.cnpj && (
                   <>
                     <Label text="Informe o CNPJ" />
                     <Input
                       value={inputs.cnpj}
                       placeholder="CNPJ"
                       errorMessage={
-                        submitted && !inputs.cnpj ? 'Campo obrigatório' : ''
+                        submitted && !inputs.cnpj ? "Campo obrigatório" : ''
                       }
                       onChangeText={(text) => {
-                        if (text.length <= 18 || text === '') {
-                          handleChange({name: 'cnpj', value: maskCnpj(text)});
+                        if (text.length <= 18 || text === "") {
+                          handleChange({name: "cnpj", value: maskCnpj(text)});
                         }
                       }}
                       keyboardType="number-pad"
@@ -204,24 +190,24 @@ export default function ProvideInformation({navigation, route}) {
                 )}
               </>
             )}
-            {!customer.phone && (
+            {!customer.phone_number && (
               <>
                 <Label text="Número de Telefone" />
                 <Input
-                  value={inputs.phone}
+                  value={inputs.phone_number}
                   placeholder="Número de telefone"
                   errorMessage={
-                    submitted && !inputs.phone ? 'Campo obrigatório' : ''
+                    submitted && !inputs.phone_number ? "Campo obrigatório" : ""
                   }
                   onChangeText={(text) => {
-                    if (text.length <= 14 || text === '') {
+                    if (text.length <= 14 || text === "") {
                       handleChange({
-                        name: 'phone',
-                        value: maskPhone(text.replace('-', '')),
+                        name: "phone_number",
+                        value: maskPhone(text.replace("-", "")),
                       });
                     }
                   }}
-                  keyboardType="phone-pad"
+                  keyboardType="number-pad"
                 />
               </>
             )}

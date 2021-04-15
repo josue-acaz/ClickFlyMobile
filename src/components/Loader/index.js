@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-import {Center} from '../../components';
+import Center from '../../components/Center';
 import {MaterialIndicator} from 'react-native-indicators';
 
 const Loader = ({

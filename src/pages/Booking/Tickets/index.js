@@ -1,23 +1,23 @@
 import React from 'react';
 import {ScrollView, View, StyleSheet} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  Ticket,
-  BottomAction,
-  Button,
-  BottomSpace,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import Ticket from '../../../components/Ticket';
+import BottomAction from '../../../components/BottomAction';
+import Button from '../../../components/Button';
+import BottomSpace from '../../../components/BottomSpace';
+
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 
 export default function Tickets({navigation, route}) {
   const {
-    booking: {customer_bookings, stretch},
+    booking: {passengers, flight_segment},
   } = route.params;
 
   function handleInstructions() {
-    navigation.navigate('Instructions', {flight: stretch});
+    navigation.navigate("Instructions", {flight_segment});
   }
 
   return (
@@ -31,10 +31,10 @@ export default function Tickets({navigation, route}) {
           />
           <SubsectionTitle text="Meus bilhetes" />
           <View style={styles.tickets}>
-            {customer_bookings.map((customer_booking) => (
+            {passengers.map((passenger, index) => (
               <Ticket
-                key={customer_booking.id + ''}
-                booking={{passenger: customer_booking, flight: stretch}}
+                key={index}
+                booking={{passenger, flight: flight_segment}}
               />
             ))}
           </View>

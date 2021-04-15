@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {Bootstrap} from '../../components';
+import Bootstrap from '../../components/Bootstrap';
 
 export default function Alert({
   open,

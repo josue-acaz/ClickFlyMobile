@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, Image} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Input} from '../../components';
+import Input from '../../components/Input';
 import {getCardBrand, maskCardNumber} from '../../utils';
 import {brands} from '../../constants';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
-import {Inline} from '../../components';
+import Inline from '../../components/Inline';
 import {findBrand} from '../../utils';
 
 export default function CardItem({card, onPress}) {

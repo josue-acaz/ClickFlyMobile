@@ -22,7 +22,7 @@ export default function PayHelp({onHelp}) {
         {brands.map((brand, index) => {
           if (index < brands.length - 3) {
             return (
-              <Image key={brand.id} style={styles.img} source={brand.img} />
+              <Image key={index} style={styles.img} source={brand.img} />
             );
           }
         })}

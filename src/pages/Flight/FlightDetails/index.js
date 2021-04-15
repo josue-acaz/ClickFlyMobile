@@ -1,18 +1,18 @@
 import React, {useState} from 'react';
 import {ScrollView, Text, StyleSheet, View} from 'react-native';
 import NumericInput from 'react-native-numeric-input';
-import {
-  Screen,
-  SubsectionTitle,
-  ArrowBack,
-  BottomAction,
-  Button,
-  Bootstrap,
-  BottomOverlay,
-  Aircraft,
-  RouteGraph,
-  BottomSpace,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import ArrowBack from '../../../components/ArrowBack';
+import BottomAction from '../../../components/BottomAction';
+import Button from '../../../components/Button';
+import Bootstrap from '../../../components/Bootstrap';
+import BottomOverlay from '../../../components/BottomOverlay';
+import Aircraft from '../../../components/Aircraft';
+import RouteGraph from '../../../components/RouteGraph';
+import BottomSpace from '../../../components/BottomSpace';
+
 import {currency, calcSubtotal} from '../../../utils';
 
 const {Row, Col} = Bootstrap;
@@ -36,8 +36,8 @@ export default function FlightDetails({navigation, route}) {
   }
 
   function handleMoreAircraft(aircraft) {
-    navigation.navigate('Aircraft', {
-      screen: 'Airplane',
+    navigation.navigate("Aircraft", {
+      screen: "Airplane",
       params: {aircraft},
     });
   }

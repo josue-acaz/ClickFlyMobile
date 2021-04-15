@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-import {
-  Button,
-  ArrowBack,
-  SubsectionTitle,
-  Input,
-  Screen,
-  BottomAction,
-  Alert,
-} from '../../components';
+
+import Button from '../../components/Button';
+import ArrowBack from '../../components/ArrowBack';
+import SubsectionTitle from '../../components/SubsectionTitle';
+import Input from '../../components/Input';
+import Screen from '../../components/Screen';
+import BottomAction from '../../components/BottomAction';
+import Alert from '../../components/Alert';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../../services/api';
 

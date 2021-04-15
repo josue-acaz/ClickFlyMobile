@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
-import {Inline} from '../../components';
+import Inline from '../../components/Inline';
 
 const {width} = Dimensions.get('screen');
 

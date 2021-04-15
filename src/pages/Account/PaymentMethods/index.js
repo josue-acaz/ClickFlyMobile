@@ -7,15 +7,15 @@ import {
   ScrollView,
 } from 'react-native';
 import {MaterialIndicator} from 'react-native-indicators';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  Center,
-  Card,
-  Subtitle,
-  Alert,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import Center from '../../../components/Center';
+import Card from '../../../components/Card';
+import Subtitle from '../../../components/Subtitle';
+import Alert from '../../../components/Alert';
+
 import api from '../../../services/api';
 
 export default function PaymentMethods({route, navigation}) {
@@ -43,8 +43,9 @@ export default function PaymentMethods({route, navigation}) {
     setLoading(true);
     async function index() {
       try {
-        const response = await api.get(`customers/${customer.id}/cards`);
-        setPayment(response.data);
+        const response = await api.get(`/customer-cards`);
+        const formatted_cards = response.data;
+        setPayment(formatted_cards);
         setLoading(false);
       } catch (err) {
         console.error(err);

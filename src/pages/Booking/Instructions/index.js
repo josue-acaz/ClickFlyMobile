@@ -13,14 +13,13 @@ import Geocoder from 'react-native-geocoding';
 import MapView, {Marker} from 'react-native-maps';
 import {capitalize} from '../../../utils';
 import {mapstyle} from '../../../constants';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  Instruction,
-  Loader,
-  BottomSpace,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import Instruction from '../../../components/Instruction';
+import Loader from '../../../components/Loader';
+import BottomSpace from '../../../components/BottomSpace';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -35,61 +34,57 @@ const TicketIcon = () => <Entypo name="ticket" size={22} color="#09354B" />;
 const CardIcon = () => <AntDesign name="idcard" size={22} color="#09354B" />;
 
 export default function Instructions({navigation, route}) {
-  const {flight} = route.params;
+  const {flight_segment} = route.params;
   const [originAddress, setOriginAddress] = useState(null);
   const [destinAddress, setDestinAddress] = useState(null);
   const [slider, setSlider] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const oA = flight.origin_aerodrome;
-  const dA = flight.destination_aerodrome;
-  const op = flight.operator;
+  const origin_aerodrome = flight_segment.origin_aerodrome;
+  const destination_aerodrome = flight_segment.destination_aerodrome;
+  const air_taxi = flight_segment.flight.air_taxi;
 
   const instructions = [
     {
-      id: 1,
       text: 'Chegue com até 1h de antecedência do voo.',
       Icon: TimerIcon,
     },
     {
-      id: 2,
       text: 'Apresente seu bilhete para fazer o embarque.',
       Icon: TicketIcon,
     },
     {
-      id: 3,
-      text:
-        'Leve seu documento de identificação que consta no bilhete de embarque',
+      text: 'Leve seu documento de identificação que consta no bilhete de embarque',
       Icon: CardIcon,
     },
   ];
 
   const oRegion = {
-    latitude: oA.latitude,
-    longitude: oA.longitude,
+    latitude: origin_aerodrome.latitude,
+    longitude: origin_aerodrome.longitude,
     latitudeDelta: 0.0922 / 12,
     longitudeDelta: 0.0421 / 12,
   };
   const dRegion = {
-    latitude: dA.latitude,
-    longitude: dA.longitude,
+    latitude: destination_aerodrome.latitude,
+    longitude: destination_aerodrome.longitude,
     latitudeDelta: 0.0922 / 12,
     longitudeDelta: 0.0421 / 12,
   };
 
-  const oCoordinate = {latitude: oA.latitude, longitude: oA.longitude};
-  const dCoordinate = {latitude: dA.latitude, longitude: dA.longitude};
-  const oName = oA.name.split('/')[1] ? oA.name.split('/')[1] : oA.name;
-  const dName = dA.name.split('/')[1] ? dA.name.split('/')[1] : dA.name;
+  const oCoordinate = {latitude: origin_aerodrome.latitude, longitude: origin_aerodrome.longitude};
+  const dCoordinate = {latitude: destination_aerodrome.latitude, longitude: destination_aerodrome.longitude};
+  const oName = origin_aerodrome.name.split('/')[1] ? origin_aerodrome.name.split('/')[1] : origin_aerodrome.name;
+  const dName = destination_aerodrome.name.split('/')[1] ? destination_aerodrome.name.split('/')[1] : destination_aerodrome.name;
 
   useEffect(() => {
-    Geocoder.init('AIzaSyBgFaxqLR02XM-MeJAvctBDDSVdMj5zyWM');
-    Geocoder.from(oA.latitude, oA.longitude)
+    Geocoder.init("AIzaSyBgFaxqLR02XM-MeJAvctBDDSVdMj5zyWM");
+    Geocoder.from(origin_aerodrome.latitude, origin_aerodrome.longitude)
       .then((json) => {
         setOriginAddress(json.results[1].formatted_address);
 
-        Geocoder.from(dA.latitude, dA.longitude).then((json) => {
+        Geocoder.from(destination_aerodrome.latitude, destination_aerodrome.longitude).then((json) => {
           setDestinAddress(json.results[1].formatted_address);
           setLoading(false);
         });
@@ -132,7 +127,7 @@ export default function Instructions({navigation, route}) {
           customMapStyle={mapstyle}>
           <Marker
             coordinate={slider ? oCoordinate : dCoordinate}
-            title={slider ? oA.oaci_code : dA.oaci_code}
+            title={slider ? origin_aerodrome.oaci_code : destination_aerodrome.oaci_code}
             description={capitalize(slider ? oName : dName)}
           />
         </MapView>
@@ -167,14 +162,14 @@ export default function Instructions({navigation, route}) {
             <View style={styles.company}>
               <Text style={styles.company_txt}>
                 Este voo será operado por{' '}
-                <Text style={styles.companyName}>{op.user.name}</Text>
+                <Text style={styles.companyName}>{air_taxi.user.name}</Text>
               </Text>
-              <Text style={styles.email}>{op.user.email}</Text>
+              <Text style={styles.email}>{air_taxi.user.email}</Text>
             </View>
 
-            {instructions.map((instruction) => (
+            {instructions.map((instruction, index) => (
               <Instruction
-                key={instruction.id}
+                key={index}
                 Icon={instruction.Icon}
                 instruction={instruction.text}
               />
@@ -229,7 +224,7 @@ export default function Instructions({navigation, route}) {
                   <Text style={styles.airport}>
                     Aeroporto{' '}
                     {capitalize(
-                      oA.name.split('/')[1] ? oA.name.split('/')[1] : oA.name,
+                      origin_aerodrome.name.split('/')[1] ? origin_aerodrome.name.split('/')[1] : origin_aerodrome.name,
                     )}
                   </Text>
                   <Text style={styles.address}>
@@ -242,7 +237,7 @@ export default function Instructions({navigation, route}) {
                   <Text style={styles.airport}>
                     Aeroporto{' '}
                     {capitalize(
-                      dA.name.split('/')[1] ? dA.name.split('/')[1] : dA.name,
+                      destination_aerodrome.name.split('/')[1] ? destination_aerodrome.name.split('/')[1] : destination_aerodrome.name,
                     )}
                   </Text>
                   <Text style={styles.address}>

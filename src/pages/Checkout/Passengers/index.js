@@ -1,48 +1,85 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, StyleSheet, View, Text} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  Subtitle,
-  Button,
-  BottomAction,
-  Inline,
-  Passenger,
-  BottomSpace,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import Subtitle from '../../../components/Subtitle';
+import Button from '../../../components/Button';
+import BottomAction from '../../../components/BottomAction';
+import Inline from '../../../components/Inline';
+import Loader from '../../../components/Loader';
+import Passenger from '../../../components/Passenger';
+import BottomSpace from '../../../components/BottomSpace';
+import {EnumCustomerTypes} from '../../../constants';
+
+// Icons
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {mergeCustomer} from '../../../utils';
+import api from '../../../services/api';
 
 const PassengerIcon = () => (
   <FontAwesome name="user-circle" size={24} color="#666" />
 );
 
 export default function Passengers({navigation, route}) {
-  const {selected_seats} = route.params;
-  const customer = mergeCustomer(route.params.customer);
-  const [passengers, setPassengers] = useState(customer.customer_friends);
+  const {selected_seats, customer} = route.params;
+  const [loading, setLoading] = useState(true);
+  const [passengers, setPassengers] = useState([]);
 
   useEffect(() => {
-    function addFirstPassenger() {
-      if (customer.type === 'physical-entity') {
+    function init() {
+      if (customer.type === EnumCustomerTypes.PF) {
         // Se for entidade física, adiciona o primeiro passageiro
-        setPassengers((passengers) => [
-          ...passengers,
-          {
-            name: customer.name,
-            email: customer.email,
-            phone: customer.phone,
-            dob: customer.dob,
-            rg: customer.rg,
-            isFriend: false, // Diz se vai ser colocado na lista de adição de amigos do cliente
+        const first_passenger = {
+          id: customer.id,
+          name: customer.name,
+          email: customer.email,
+          phone_number: customer.phone_number,
+          dob: customer.pf.dob,
+          rg: customer.pf.rg,
+          cnh: customer.pf.cnh,
+          ctps: customer.pf.ctps,
+          active: false,
+          is_friend: false, // Diz se vai ser colocado na lista de adição de amigos do cliente
+        };
+
+        setPassengers((passengers) => [...passengers, first_passenger]);
+      }
+
+      index();
+    }
+
+    async function index() {
+      try {
+        const response = await api.get("/customer-friends", {
+          params: {
+            text: "",
+            limit: 10,
+            offset: 0,
+            order: "DESC",
+            order_by: "created_at"
+          }
+        });
+        
+        const {rows, count} = response.data;
+        rows.forEach(customer_friend => {
+          const passenger = {
+            ...customer_friend,
+            is_friend: true,
             active: false,
-          },
-        ]);
+          };
+
+          setPassengers(passengers => [...passengers, passenger]);
+        });
+
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
       }
     }
 
-    addFirstPassenger();
+    init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -67,9 +104,14 @@ export default function Passengers({navigation, route}) {
   }
 
   // Verifica quantos estão reservados
+  // Array com o ID de cada passageiro
   function getCheckedPassengers() {
-    const arr = passengers.filter((passenger) => passenger.active);
-    return arr;
+    const active_passengers = passengers.filter((passenger) => passenger.active).map(passenger => ({
+      id: passenger.id,
+      is_friend: passenger.is_friend,
+    }));  
+    console.log(active_passengers);
+    return active_passengers;
   }
 
   // Retorna o número de assentos restantes
@@ -78,11 +120,11 @@ export default function Passengers({navigation, route}) {
   }
 
   function handleAddPassenger() {
-    navigation.navigate('AddFriend', {returnRoute: 'Passengers'});
+    navigation.navigate("AddFriend", {returnRoute: "Passengers"});
   }
 
   function handleNext() {
-    navigation.navigate('Purchase', {
+    navigation.navigate("Purchase", {
       ...route.params,
       passengers: getCheckedPassengers(),
     });
@@ -94,81 +136,85 @@ export default function Passengers({navigation, route}) {
   return (
     <>
       <Screen>
-        <ScrollView>
-          <ArrowBack
+        {loading ? <Loader /> : (
+          <ScrollView>
+            <ArrowBack
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+            <SubsectionTitle text="Passageiros" />
+            <Subtitle text="Selecione os passageiros" />
+
+            <View style={styles.banner}>
+              <Inline
+                style={styles.feedback}
+                justify="space-between"
+                components={[
+                  {
+                    id: 1,
+                    component: (
+                      <Text style={styles.bannerTxt}>
+                        {remainingSeats() > 0
+                          ? `${remainingSeats()} assentos restantes`
+                          : 'Nenhum assento restantes'}
+                      </Text>
+                    ),
+                  },
+                  {
+                    id: 2,
+                    component: (
+                      <>
+                        {remainingSeats() > 0 && (
+                          <View style={styles.passengerIcon}>
+                            <PassengerIcon />
+                          </View>
+                        )}
+                      </>
+                    ),
+                  },
+                ]}
+              />
+
+              <View style={styles.passengers}>
+                {passengers
+                  .sort((a, b) => a.id - b.id)
+                  .map((passenger, index) => (
+                    <Passenger
+                      key={index + ''}
+                      passenger={passenger}
+                      checked={passenger.active}
+                      handleCheck={() => {
+                        handleCheckPassenger(index);
+                      }}
+                    />
+                  ))}
+                {passengers.length === 0 && (
+                  <Text style={styles.noPassengers}>
+                    Nenhum passageiro disponível, por favor, adicione um para vêlo
+                    aqui!
+                  </Text>
+                )}
+              </View>
+            </View>
+            <BottomSpace />
+          </ScrollView>
+        )}
+      </Screen>
+      {!loading && (
+        <BottomAction>
+          <Button
+            text={next ? 'Continuar' : 'Novo passageiro'}
             onPress={() => {
-              navigation.goBack();
+              if (next) {
+                handleNext();
+              } else {
+                handleAddPassenger();
+              }
             }}
           />
-          <SubsectionTitle text="Passageiros" />
-          <Subtitle text="Selecione os passageiros" />
-
-          <View style={styles.banner}>
-            <Inline
-              style={styles.feedback}
-              justify="space-between"
-              components={[
-                {
-                  id: 1,
-                  component: (
-                    <Text style={styles.bannerTxt}>
-                      {remainingSeats() > 0
-                        ? `${remainingSeats()} assentos restantes`
-                        : 'Nenhum assento restantes'}
-                    </Text>
-                  ),
-                },
-                {
-                  id: 2,
-                  component: (
-                    <>
-                      {remainingSeats() > 0 && (
-                        <View style={styles.passengerIcon}>
-                          <PassengerIcon />
-                        </View>
-                      )}
-                    </>
-                  ),
-                },
-              ]}
-            />
-
-            <View style={styles.passengers}>
-              {passengers
-                .sort((a, b) => a.id - b.id)
-                .map((passenger, index) => (
-                  <Passenger
-                    key={index + ''}
-                    passenger={passenger}
-                    checked={passenger.active}
-                    handleCheck={() => {
-                      handleCheckPassenger(index);
-                    }}
-                  />
-                ))}
-              {passengers.length === 0 && (
-                <Text style={styles.noPassengers}>
-                  Nenhum passageiro disponível, por favor, adicione um para vêlo
-                  aqui!
-                </Text>
-              )}
-            </View>
-          </View>
-          <BottomSpace />
-        </ScrollView>
-      </Screen>
-      <BottomAction>
-        <Button
-          text={next ? 'Continuar' : 'Novo passageiro'}
-          onPress={() => {
-            if (next) {
-              handleNext();
-            } else {
-              handleAddPassenger();
-            }
-          }}
-        />
-      </BottomAction>
+        </BottomAction> 
+      )}
     </>
   );
 }

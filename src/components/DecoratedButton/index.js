@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {TouchableOpacity, StyleSheet, Text} from 'react-native';
-import {Inline} from '../../components';
+import Inline from '../../components/Inline';
 
 export default function DecoratedButton({
   text,

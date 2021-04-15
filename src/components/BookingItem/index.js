@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Inline} from '../../components';
+import Inline from '../../components/Inline';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getDatetime} from '../../utils';
 
@@ -23,8 +23,9 @@ const ArrowIcon = ({style}) => (
 );
 
 export default function BookingItem({booking, handleShow}) {
-  const {approved, selected_seats, aircraft, stretch} = booking;
-  const {origin_aerodrome, destination_aerodrome, departure_datetime} = stretch;
+  const {approved, selected_seats, aircraft, flight_segment} = booking;
+  const {departure_datetime, origin_aerodrome, destination_aerodrome} = flight_segment;
+  
   return (
     <TouchableOpacity onPress={handleShow} style={styles.booking}>
       <Inline
@@ -71,8 +72,8 @@ export default function BookingItem({booking, handleShow}) {
                         </Text>
                         <Text style={styles.status}>
                           {approved
-                            ? 'Aguardando embarque'
-                            : 'Pagamento pendente'}
+                            ? "Aguardando embarque"
+                            : "Pagamento pendente"}
                         </Text>
                       </View>
                     ),

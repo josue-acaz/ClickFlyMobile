@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-import {SlimButton} from '../../../components';
+import SlimButton from '../../../components/SlimButton';
 
 export default function AboutDebit({onDimiss}) {
   return (

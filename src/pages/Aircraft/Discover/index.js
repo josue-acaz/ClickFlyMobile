@@ -7,7 +7,10 @@ import {
   ScrollView,
   Text,
 } from 'react-native';
-import {Screen, ArrowBack, SubsectionTitle} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
 
 const {width, height} = Dimensions.get('screen');
 

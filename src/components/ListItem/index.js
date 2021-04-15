@@ -1,9 +1,8 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import Bootstrap from '../../components/Bootstrap';
 import Checkbox from '../../components/Checkbox';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {cutText} from '../../utils';
 
 const {Row, Col} = Bootstrap;
 
@@ -11,31 +10,32 @@ const ArrowIcon = () => (
   <MaterialIcons name="arrow-forward" size={24} color="#00B2A9" />
 );
 
-export default function Friend({
-  friend,
+export default function ListItem({
+  id,
+  children,
   checked,
   handleChecked,
+  handleEdit,
   activeSelection = false,
 }) {
   return (
     <View
-      style={checked ? {...styles.friend, ...styles.selected} : styles.friend}>
+      style={checked ? {...styles.listItem, ...styles.selected} : styles.listItem}>
       <Row>
         <Col size="1">
           <Checkbox
             onPress={() => {
-              handleChecked(friend.id);
+              handleChecked(id);
             }}
             checked={checked}
           />
         </Col>
         <Col size="7">
-          <Text style={styles.friendName}>{cutText(friend.name, 30)}</Text>
-          <Text style={styles.friendPhone}>{friend.phone_number}</Text>
+          {children}
         </Col>
         {!activeSelection && (
           <Col size="2" style={styles.colEnd}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleEdit(id)}>
               <ArrowIcon />
             </TouchableOpacity>
           </Col>
@@ -46,14 +46,12 @@ export default function Friend({
 }
 
 const styles = StyleSheet.create({
-  friend: {
+  listItem: {
     paddingTop: 15,
     paddingBottom: 15,
     borderBottomColor: '#d9d9d9',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  /*borderTopWidth: 1,
-    borderTopColor: '#d9d9d9',*/
   selected: {
     backgroundColor: '#fafafa',
   },
@@ -61,11 +59,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  friendName: {
+  listItemName: {
     fontSize: 16,
     color: '#444444',
   },
-  friendPhone: {
+  listItemPhone: {
     fontSize: 16,
     color: '#00B2A9',
   },

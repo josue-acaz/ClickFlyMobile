@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
-import {Button} from '../../../components';
+import Button from '../../../components/Button';
 import cvv from '../../../assets/cvv.png';
 
 export default function CVV({onDimiss}) {

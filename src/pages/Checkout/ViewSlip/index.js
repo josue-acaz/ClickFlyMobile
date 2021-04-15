@@ -1,16 +1,16 @@
 import React from 'react';
 import {ScrollView, Text, View, StyleSheet} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  BottomAction,
-  Button,
-  Subtitle,
-  Bootstrap,
-  DecoratedButton,
-  BottomSpace,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import BottomAction from '../../../components/BottomAction';
+import Button from '../../../components/Button';
+import Subtitle from '../../../components/Subtitle';
+import Bootstrap from '../../../components/Bootstrap';
+import DecoratedButton from '../../../components/DecoratedButton';
+import BottomSpace from '../../../components/BottomSpace';
+
 import {maskBarCode, formatShortDate, currency} from '../../../utils';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';

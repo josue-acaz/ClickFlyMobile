@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  BottomAction,
-  Button,
-  Bootstrap,
-  Radio,
-  Inline,
-  LegSummary,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import BottomAction from '../../../components/BottomAction';
+import Button from '../../../components/Button';
+import Bootstrap from '../../../components/Bootstrap';
+import Radio from '../../../components/Radio';
+import Inline from '../../../components/Inline';
+import LegSummary from '../../../components/LegSummary';
+
 import {currency} from '../../../utils';
 
 const {Row, Col} = Bootstrap;
@@ -26,7 +26,7 @@ export default function TripSummary({navigation, route}) {
     selected_seats,
     subtotal,
   } = route.params;
-  const [checked, setChecked] = useState('credit/debit');
+  const [checked, setChecked] = useState("credit/debit");
   function handleChecked(value) {
     setChecked(value);
   }
@@ -98,6 +98,27 @@ export default function TripSummary({navigation, route}) {
                   id: 2,
                   component: (
                     <Text style={styles.radioLabel}>Boleto Bancário</Text>
+                  ),
+                },
+              ]}
+            />
+            <Inline
+              style={styles.radio}
+              components={[
+                {
+                  id: 1,
+                  component: (
+                    <Radio
+                      value="pix"
+                      selected={checked}
+                      onChange={handleChecked}
+                    />
+                  ),
+                },
+                {
+                  id: 2,
+                  component: (
+                    <Text style={styles.radioLabel}>Pix</Text>
                   ),
                 },
               ]}

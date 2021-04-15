@@ -2,56 +2,57 @@ import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {ListItem, Icon} from 'react-native-elements';
 import {MaterialIndicator} from 'react-native-indicators';
-import {Screen, Profile, Center, BottomSpace} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import Profile from '../../../components/Profile';
+import Center from '../../../components/Center';
+import BottomSpace from '../../../components/BottomSpace';
+
 import {useAuth} from '../../../contexts/auth';
 import {useScreen} from '../../../contexts/screen';
 import api from '../../../services/api';
 import {getStatusBarHeight} from 'react-native-iphone-x-helper';
 
-const list = [
+const menu_options = [
   {
-    id: 1,
     title: 'Informações Pessoais',
     subtitle: 'Meus dados',
     icon: 'person',
     route: 'PersonalInformation',
   },
   {
-    id: 2,
     title: 'Formas de Pagamento',
     subtitle: 'Minhas formas de pagamento',
     icon: 'payment',
     route: 'PaymentMethods',
   },
   {
-    id: 3,
-    title: 'Endereço',
-    subtitle: 'Meu endereço de pagamento',
+    title: 'Endereços',
+    subtitle: 'Meus endereços de pagamento',
     icon: 'home',
-    route: 'Address',
+    route: 'Addresses',
   },
   {
-    id: 4,
     title: 'Passageiros',
     subtitle: 'Passageiros recorrentes',
     icon: 'supervisor-account',
     route: 'Friends',
   },
   {
-    id: 5,
     title: 'Sair',
     subtitle: 'Sair do aplicativo',
     icon: 'exit-to-app',
     route: '',
   },
 ];
+
 export default function Menu({navigation, route}) {
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const {refresh} = useScreen();
   const {user, signOut} = useAuth();
-  const {id} = user.customer;
+  const {id} = user;
 
   async function getUserAsync(customer_id) {
     try {
@@ -79,7 +80,7 @@ export default function Menu({navigation, route}) {
   }, [refresh]);
 
   function handleChangeProfile() {
-    navigation.navigate('Photo', {customer});
+    navigation.navigate("Photo", {customer});
   }
 
   return (
@@ -99,16 +100,16 @@ export default function Menu({navigation, route}) {
               <View style={styles.header}>
                 <View style={styles.profile}>
                   <Profile
-                    thumbnail={customer.user.thumbnail}
+                    thumbnail={customer.thumbnail}
                     onPress={handleChangeProfile}
                   />
                 </View>
-                <Text style={styles.customerName}>{customer.user.name}</Text>
+                <Text style={styles.customerName}>{customer.name}</Text>
               </View>
               <View style={styles.content}>
-                {list.map((item) => (
+                {menu_options.map((item, index) => (
                   <ListItem
-                    key={item.id}
+                    key={index}
                     bottomDivider
                     onPress={() => {
                       if (item.id === 5) {

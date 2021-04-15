@@ -1,6 +1,10 @@
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
-import {Screen, Center, Button, BottomAction} from '../../components';
+
+import Screen from '../../components/Screen';
+import Center from '../../components/Center';
+import Button from '../../components/Button';
+import BottomAction from '../../components/BottomAction';
 
 export default function NotLogged({navigation, title}) {
   function handleLogin() {

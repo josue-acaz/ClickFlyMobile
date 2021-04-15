@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
-import {Button} from '../../../components';
+import Button from '../../../components/Button';
 import boleto from '../../../assets/boleto.png';
 
 export default function SlipPay({onDimiss}) {

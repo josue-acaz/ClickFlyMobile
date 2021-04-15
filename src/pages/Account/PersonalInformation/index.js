@@ -1,28 +1,28 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, View, StyleSheet} from 'react-native';
 import {Input} from 'react-native-elements';
-import {
-  Screen,
-  SubsectionTitle,
-  ArrowBack,
-  Button,
-  BottomAction,
-  Alert,
-  Label,
-  BottomSpace,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import ArrowBack from '../../../components/ArrowBack';
+import BottomAction from '../../../components/BottomAction';
+import Alert from '../../../components/Alert';
+import Label from '../../../components/Label';
+import BottomSpace from '../../../components/BottomSpace';
+import Button from '../../../components/Button';
+
+import {EnumCustomerTypes, EnumDateFormatTypes} from '../../../constants';
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
-  rmCPF,
-  rmDOB,
-  rmEspecialCaracteres,
+  getFormattedDatetime,
+  escapeCaracteres,
+  readableCpf,
   maskPhone,
   maskCnpj,
   maskCpf,
   maskData,
-  inCPF,
-  inDOB,
 } from '../../../utils';
 import api from '../../../services/api';
 
@@ -41,30 +41,30 @@ const PhoneIcon = () => <MaterialIcons name="phone" size={22} color="gray" />;
 
 export default function PersonalInformation({navigation, route}) {
   const {customer} = route.params;
-  const customer_type = customer.type.replace('-', '_');
-  const user = {
-    ...customer.user,
-    ...customer[customer_type],
-  };
   const [inputs, setInputs] = useState({
-    name: '',
-    email: '',
-    rg: '',
-    cpf: '',
-    dob: '',
-    phone: '',
-    cnpj: '',
+    name: "",
+    email: "",
+    phone_number: "",
+    rg: "",
+    cpf: "",
+    dob: "",
+    ctps: "",
+    cnh: "",
+    cnpj: "",
   });
+
   function handleChange(e) {
     const {name, value} = e;
     setInputs((inputs) => ({...inputs, [name]: value}));
   }
+
   const [alert, setAlert] = useState({
     open: false,
     processing: false,
     error: false,
     success: false,
   });
+
   function handleAlert(e) {
     const {name, value} = e;
     setAlert((alert) => ({...alert, [name]: value}));
@@ -75,82 +75,76 @@ export default function PersonalInformation({navigation, route}) {
   };
 
   useEffect(() => {
-    const elements = [
+    var form = [
       {
-        id: 1,
-        label: 'name',
-        value: user.name,
+        name: "name",
+        value: customer.name,
       },
       {
-        id: 2,
-        label: 'email',
-        value: user.email,
+        name: "email",
+        value: customer.email,
       },
       {
-        id: 3,
-        label: 'rg',
-        value: user.rg || '',
-      },
-      {
-        id: 4,
-        label: 'cpf',
-        value: rmCPF(user.cpf) || '',
-      },
-      {
-        id: 5,
-        label: 'dob',
-        value: rmDOB(user.dob) || '',
-      },
-      {
-        id: 6,
-        label: 'cnpj',
-        value: maskCnpj(user.cnpj) || '',
-      },
-      {
-        id: 7,
-        label: 'phone',
-        value: user.phone,
-      },
+        name: "phone_number",
+        value: maskPhone(customer.phone_number),
+      }
     ];
 
-    elements.forEach((el) => {
-      handleChange({name: el.label, value: el.value});
-    });
+    if(customer.type === EnumCustomerTypes.PF) {
+      form[3] = {
+        name: "rg",
+        value: customer.pf.rg,
+      };
+      
+      form[4] = {
+        name: "dob",
+        value: getFormattedDatetime(new Date(customer.pf.dob), EnumDateFormatTypes.READABLE_V2),
+      };
 
+      form[5] = {
+        name: "cpf",
+        value: readableCpf(customer.pf.cpf),
+      };
+    } else if(customer.type === EnumCustomerTypes.PJ) {
+      form[3] = {
+        name: "cnpj",
+        value: maskCnpj(customer.pj.cnpj),
+      };
+    }
+    
+    form.forEach(element => {
+      handleChange({name: element.name, value: element.value});
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleSubmit() {
-    handleAlert({name: 'open', value: true});
+    handleAlert({name: "open", value: true});
   }
-  async function handleUpdate() {
-    handleAlert({name: 'processing', value: true});
+
+  async function handleEdit(id) {
+    handleAlert({name: "processing", value: true});
+
     const data = {
-      user: {
-        name: inputs.name,
-        email: inputs.email,
-        phone: inputs.phone,
-      },
-      customer: {},
-      entity: {
-        rg: inputs.rg,
-        cpf: inputs.cpf ? inCPF(inputs.cpf) : null,
-        dob: inputs.dob ? inDOB(inputs.dob) : null,
-        cnpj: inputs.cnpj ? rmEspecialCaracteres(inputs.cnpj) : null,
-      },
+      name: inputs.name,
+      email: inputs.email,
+      rg: inputs.rg,
+      cpf: escapeCaracteres(inputs.cpf),
+      dob: inputs.dob.split("/").reverse().join("-"),
+      phone_number: escapeCaracteres(inputs.phone_number)
     };
 
     try {
-      await api.put(`/customers/${customer.id}/update`, data);
-      handleAlert({name: 'processing', value: false});
-      handleAlert({name: 'success', value: true});
+      await api.put(`/customers/${id}/update`, data);
+      handleAlert({name: "processing", value: false});
+      handleAlert({name: "success", value: true});
     } catch (err) {
-      handleAlert({name: 'processing', value: false});
-      handleAlert({name: 'error', value: true});
+      handleAlert({name: "processing", value: false});
+      handleAlert({name: "error", value: true});
     }
   }
   function handleFinish() {
-    handleAlert({name: 'open', value: false});
+    handleAlert({name: "open", value: false});
     handleGoBack();
   }
 
@@ -160,9 +154,9 @@ export default function PersonalInformation({navigation, route}) {
         open={alert.open}
         title="Atualizar informações"
         message="Confirmar alteração dos dados?"
-        onConfirm={handleUpdate}
+        onConfirm={() => handleEdit(customer.id)}
         onCancel={() => {
-          handleAlert({name: 'open', value: false});
+          handleAlert({name: "open", value: false});
         }}
         processing={alert.processing}
         processingTitle="Estamos atualizando seus dados..."
@@ -204,7 +198,7 @@ export default function PersonalInformation({navigation, route}) {
                 handleChange({name: 'email', value: text});
               }}
             />
-            {customer_type === 'physical_entity' ? (
+            {customer.type === EnumCustomerTypes.PF ? (
               <>
                 <Label text="Número do RG" />
                 <Input
@@ -223,7 +217,7 @@ export default function PersonalInformation({navigation, route}) {
                   value={inputs.cpf}
                   leftIcon={<FingerPrintIcon />}
                   onChangeText={(text) => {
-                    if (text.length <= 14 || text === '') {
+                    if (text.length <= 14 || text === "") {
                       handleChange({name: 'cpf', value: maskCpf(text)});
                     }
                   }}
@@ -235,7 +229,7 @@ export default function PersonalInformation({navigation, route}) {
                   value={inputs.dob}
                   leftIcon={<DateIcon />}
                   onChangeText={(text) => {
-                    if (text.length <= 10 || text === '') {
+                    if (text.length <= 10 || text === "") {
                       handleChange({name: 'dob', value: maskData(text)});
                     }
                   }}
@@ -250,7 +244,7 @@ export default function PersonalInformation({navigation, route}) {
                   value={inputs.cnpj}
                   leftIcon={<IDCardIcon />}
                   onChangeText={(text) => {
-                    if (text.length <= 18 || text === '') {
+                    if (text.length <= 18 || text === "") {
                       handleChange({name: 'cnpj', value: maskCnpj(text)});
                     }
                   }}
@@ -261,13 +255,13 @@ export default function PersonalInformation({navigation, route}) {
             <Input
               keyboardType="phone-pad"
               placeholder="Telefone"
-              value={inputs.phone}
+              value={inputs.phone_number}
               leftIcon={<PhoneIcon />}
               onChangeText={(value) => {
-                if (value.length <= 14 || value === '') {
+                if (value.length <= 14 || value === "") {
                   handleChange({
                     name: 'phone',
-                    value: maskPhone(value.replace('-', '')),
+                    value: maskPhone(value.replace('-', "")),
                   });
                 }
               }}
@@ -277,7 +271,7 @@ export default function PersonalInformation({navigation, route}) {
         </ScrollView>
       </Screen>
       <BottomAction>
-        <Button text="Alterar" onPress={handleSubmit} />
+        <Button text="Salvar" onPress={handleSubmit} />
       </BottomAction>
     </>
   );

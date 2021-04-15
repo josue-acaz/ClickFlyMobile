@@ -3,18 +3,17 @@ import {View, Text, StyleSheet, ScrollView, TextInput} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {
-  Button,
-  Input,
-  Radio,
-  Inline,
-  ArrowBack,
-  Alert,
-  SubsectionTitle,
-  Screen,
-  BottomAction,
-  BottomSpace,
-} from '../../components';
+
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+import Radio from '../../components/Radio';
+import Inline from '../../components/Inline';
+import ArrowBack from '../../components/ArrowBack';
+import Alert from '../../components/Alert';
+import SubsectionTitle from '../../components/SubsectionTitle';
+import Screen from '../../components/Screen';
+import BottomAction from '../../components/BottomAction';
+import BottomSpace from '../../components/BottomSpace';
 import api from '../../services/api';
 
 const UserIcon = () => <FontAwesome name="user-o" size={22} color="#09354B" />;
@@ -26,7 +25,7 @@ const PassIcon = () => (
 );
 
 export default function SignUp({navigation}) {
-  const [entityType, setEntityType] = useState('physical-entity');
+  const [entityType, setEntityType] = useState('pf');
   const handleEntityType = (v) => {
     setEntityType(v);
   };
@@ -44,7 +43,7 @@ export default function SignUp({navigation}) {
   const [submitted, setSubmitted] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('Não foi possível criar a conta.');
+  const [errorMsg, setErrorMsg] = useState("Não foi possível criar a conta.");
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false); // alert
   function handleSubmit() {
@@ -58,7 +57,7 @@ export default function SignUp({navigation}) {
   async function handleSignUp() {
     setProcessing(true); // iniciar processo
     try {
-      await api.post('/customers', {
+      await api.post("/customers", {
         ...inputs,
         type: entityType,
       });
@@ -128,7 +127,7 @@ export default function SignUp({navigation}) {
                           id: 1,
                           component: (
                             <Radio
-                              value="physical-entity"
+                              value="pf"
                               selected={entityType}
                               onChange={handleEntityType}
                             />
@@ -153,7 +152,7 @@ export default function SignUp({navigation}) {
                           id: 1,
                           component: (
                             <Radio
-                              value="legal-entity"
+                              value="pj"
                               selected={entityType}
                               onChange={handleEntityType}
                             />
@@ -176,7 +175,7 @@ export default function SignUp({navigation}) {
             <View style={styles.in}>
               <Input
                 placeholder={
-                  entityType === 'physical-entity'
+                  entityType === 'pf'
                     ? 'Seu nome completo'
                     : 'Nome da empresa'
                 }
@@ -190,7 +189,10 @@ export default function SignUp({navigation}) {
                 }}
               />
               <Input
-                placeholder="Seu melhor email"
+                placeholder={entityType === 'pj' 
+                  ? 'Email da empresa' 
+                  : 'Seu melhor email'
+                }
                 adorment={<EmailIcon />}
                 error={submitted && !inputs.email}
                 errorTxt="Campo obrigatório"

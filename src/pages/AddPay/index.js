@@ -1,23 +1,23 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  PayHelp,
-  Input,
-  Bootstrap,
-  LockInput,
-  BottomAction,
-  Button,
-  CardInput,
-  Alert,
-  BottomOverlay,
-  Helpers,
-  Label,
-  BottomSpace,
-} from '../../components';
-import {maskCardExpiry} from '../../utils';
+
+import Screen from '../../components/Screen';
+import ArrowBack from '../../components/ArrowBack';
+import SubsectionTitle from '../../components/SubsectionTitle';
+import PayHelp from '../../components/PayHelp';
+import Input from '../../components/Input';
+import Bootstrap from '../../components/Bootstrap';
+import LockInput from '../../components/LockInput';
+import BottomAction from '../../components/BottomAction';
+import Button from '../../components/Button';
+import CardInput from '../../components/CardInput';
+import Alert from '../../components/Alert';
+import BottomOverlay from '../../components/BottomOverlay';
+import Helpers from '../../components/Helpers';
+import Label from '../../components/Label';
+import BottomSpace from '../../components/BottomSpace';
+
+import {maskCardExpiry, escapeCaracteres} from '../../utils';
 import api from '../../services/api';
 import mundipagg from '../../services/mundipagg';
 
@@ -25,29 +25,34 @@ const {Row, Col} = Bootstrap;
 
 export default function AddPay({navigation, route}) {
   const {customer, returnRoute} = route.params;
-  const walltet_customer_id = customer.customer_id; // Carteira do cliente na Mundipagg
+  const payment_gateway_customer_id = customer.payment_gateway_customer_id; // Carteira do cliente na Mundipagg
 
   const [inputs, setInputs] = useState({
-    card_number: '',
-    expires: '',
-    cvv: '',
-    holder_name: '',
-    brand: '',
+    card_number: "",
+    expires: "",
+    cvv: "",
+    holder_name: "",
+    brand: "",
   });
+
   function handleChange(e) {
     const {name, value} = e;
     setInputs((inp) => ({...inp, [name]: value}));
   }
-  const toSubmit =
-    inputs.holder_name && inputs.expires && inputs.cvv && inputs.card_number;
+  const toSubmit = inputs.holder_name 
+  && inputs.expires 
+  && inputs.cvv 
+  && inputs.card_number;
 
   const [submitted, setSubmitted] = useState(false);
+
   const [alert, setAlert] = useState({
     open: false,
     processing: false,
     error: false,
     success: false,
   });
+
   function handleAlert(e) {
     const {name, value} = e;
     setAlert((al) => ({...al, [name]: value}));
@@ -66,14 +71,14 @@ export default function AddPay({navigation, route}) {
   function handleSubmit() {
     setSubmitted(true);
     if (toSubmit) {
-      handleAlert({name: 'open', value: true});
+      handleAlert({name: "open", value: true});
     }
   }
 
   async function handleAddInWallet() {
-    handleAlert({name: 'processing', value: true});
+    handleAlert({name: "processing", value: true});
 
-    const newCard = {
+    const new_card = {
       number: inputs.card_number.split(/\s/).join(''),
       holder_name: inputs.holder_name,
       exp_month: Number(inputs.expires.split('/')[0]),
@@ -82,30 +87,30 @@ export default function AddPay({navigation, route}) {
       brand: inputs.brand,
     };
 
-    try {
-      const response = await mundipagg.post(
-        `/customers/${walltet_customer_id}/cards`,
-        newCard,
-      );
+    console.log(new_card);
 
+    try {
+      // Criar cartão na mundipagg
+      const response = await mundipagg.post(`/customers/${payment_gateway_customer_id}/cards`, new_card);
       const card = response.data;
-      const data = {
-        card_id: card.id,
+
+      await api.post(`/customer-cards`, {
+        payment_gateway_card_id: card.id,
         credit: true, // verificar se é necessário
         debit: true, // verificar se é necessário
-      };
+      });
 
-      await api.post(`/customers/${customer.id}/cards`, data);
-      handleAlert({name: 'processing', value: false});
-      handleAlert({name: 'success', value: true});
+      handleAlert({name: "processing", value: false});
+      handleAlert({name: "success", value: true});
     } catch (err) {
-      handleAlert({name: 'processing', value: false});
-      handleAlert({name: 'error', value: true});
+      console.error(err.response.data);
+      handleAlert({name: "processing", value: false});
+      handleAlert({name: "error", value: true});
     }
   }
 
   function handleFinish() {
-    handleAlert({name: 'open', value: false});
+    handleAlert({name: "open", value: false});
 
     // Se existem etapas
     const steps = route.params.steps || null;
@@ -123,7 +128,6 @@ export default function AddPay({navigation, route}) {
     if (alert.error) {
       navigation.goBack();
     } else {
-      console.log('Foi aqui...');
       navigation.navigate(returnRoute, {loading: true});
     }
   }
@@ -160,7 +164,7 @@ export default function AddPay({navigation, route}) {
           <View style={styles.payHelp}>
             <PayHelp
               onHelp={() => {
-                handleHelperName('AboutDebit');
+                handleHelperName("AboutDebit");
                 handleVisible();
               }}
             />

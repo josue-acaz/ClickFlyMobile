@@ -7,7 +7,8 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import {BottomOverlay, Inline} from '../../components';
+import Inline from '../../components/Inline';
+import BottomOverlay from '../../components/BottomOverlay';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {currency} from '../../utils';
 

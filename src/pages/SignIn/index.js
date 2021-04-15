@@ -10,7 +10,10 @@ import {
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {MaterialIndicator} from 'react-native-indicators';
-import {Input, LockInput, Button} from '../../components';
+
+import Input from '../../components/Input';
+import LockInput from '../../components/LockInput';
+import Button from '../../components/Button';
 
 import {useAuth} from '../../contexts/auth';
 import logo from '../../assets/logo.png';

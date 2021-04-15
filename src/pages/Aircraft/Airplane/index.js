@@ -1,18 +1,17 @@
 import React from 'react';
 import {ScrollView, StyleSheet, Text} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  Slider,
-  DiscoverAircraft,
-} from '../../../components';
+
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import Slider from '../../../components/Slider';
+import DiscoverAircraft from '../../../components/DiscoverAircraft';
 
 export default function Airplane({navigation, route}) {
   const {aircraft} = route.params;
-
+  console.log({aircraft});
   function handleDiscover() {
-    navigation.navigate('Discover', {images: aircraft.images});
+    navigation.navigate("Discover", {images: aircraft.images});
   }
 
   return (
@@ -28,7 +27,7 @@ export default function Airplane({navigation, route}) {
         />
         {/**<SubsectionTitle text="Detalhes de Aeronave" /> */}
         <Screen>
-          <SubsectionTitle text={aircraft.name} />
+          <SubsectionTitle text={aircraft.aircraft_model.name} />
           <Text style={styles.description}>{aircraft.description}</Text>
           <Text style={styles.titleDiscover}>Descubra essa aeronave</Text>
           <DiscoverAircraft

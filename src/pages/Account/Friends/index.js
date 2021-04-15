@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  FloatingButton,
-  Friend,
-  Loader,
-  Inline,
-  Alert,
-} from '../../../components';
+import Screen from '../../../components/Screen';
+import ArrowBack from '../../../components/ArrowBack';
+import SubsectionTitle from '../../../components/SubsectionTitle';
+import FloatingButton from '../../../components/FloatingButton';
+import Friend from '../../../components/Friend';
+import Loader from '../../../components/Loader';
+import Inline from '../../../components/Inline';
+import Alert from '../../../components/Alert';
+
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import api from '../../../services/api';
@@ -28,6 +27,7 @@ export default function Friends({navigation, route}) {
     error: false,
     success: false,
   });
+
   function handleAlert(e) {
     const {name, value} = e;
     setAlert((alert) => ({...alert, [name]: value}));
@@ -59,7 +59,7 @@ export default function Friends({navigation, route}) {
   }
 
   function handleConfirmDelete() {
-    handleAlert({name: 'open', value: true});
+    handleAlert({name: "open", value: true});
   }
 
   function getSelecteds() {
@@ -67,7 +67,7 @@ export default function Friends({navigation, route}) {
   }
 
   async function handleDeleteSelections() {
-    handleAlert({name: 'processing', value: true});
+    handleAlert({name: "processing", value: true});
 
     const selections = getSelecteds();
 
@@ -78,21 +78,31 @@ export default function Friends({navigation, route}) {
           return api.delete(`/customers/friends/${friend_id}/delete`);
         }),
       );
-      handleAlert({name: 'processing', value: false});
-      handleAlert({name: 'success', value: true});
+      handleAlert({name: "processing", value: false});
+      handleAlert({name: "success", value: true});
     } catch (err) {
       // handle error
-      handleAlert({name: 'processing', value: false});
-      handleAlert({name: 'error', value: true});
+      handleAlert({name: "processing", value: false});
+      handleAlert({name: "error", value: true});
     }
   }
 
   useEffect(() => {
     async function index() {
       try {
-        const response = await api.get(`/customers/${customer.id}/friends`);
-        createCheckedStates(response.data);
-        setFriends(response.data);
+        const response = await api.get(`/customer-friends`, {
+          params: {
+            text: "",
+            limit: 10,
+            offset: 0,
+            order: "DESC",
+            order_by: "created_at"
+          }
+        });
+
+        const {count, rows} = response.data;
+        createCheckedStates(rows);
+        setFriends(rows);
         setLoading(false);
       } catch (error) {
         // handle error
@@ -114,7 +124,7 @@ export default function Friends({navigation, route}) {
   }, [checked]);
 
   function handleFinish() {
-    handleAlert({name: 'open', value: false});
+    handleAlert({name: "open", value: false});
     navigation.navigate(returnRoute, {loading: true});
   }
 
@@ -132,7 +142,7 @@ export default function Friends({navigation, route}) {
         colorConfirmBtn="#ff1a40"
         colorCancelTxt="#ff1a40"
         onCancel={() => {
-          handleAlert({name: 'open', value: false});
+          handleAlert({name: "open", value: false});
         }}
         processing={alert.processing}
         processingTitle="Excluindo selecionados..."
@@ -197,7 +207,7 @@ export default function Friends({navigation, route}) {
             </View>
             {friends.map((friend, index) => (
               <Friend
-                key={index + ''}
+                key={index}
                 friend={friend}
                 checked={checked[`checked_${friend.id}`]}
                 handleChecked={handleChecked}

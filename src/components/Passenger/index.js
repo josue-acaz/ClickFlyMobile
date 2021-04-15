@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Checkbox, Inline} from '../../components';
-import {cutText} from '../../utils';
+import Inline from '../../components/Inline';
+import Checkbox from '../../components/Checkbox';
+import {cutText, maskPhone} from '../../utils';
 
 export default function Passenger({passenger, checked = false, handleCheck}) {
   return (
@@ -20,9 +21,9 @@ export default function Passenger({passenger, checked = false, handleCheck}) {
             component: (
               <View style={styles.passengerProper}>
                 <Text style={styles.passengerName}>
-                  {cutText(passenger.name, 26)}
+                  {cutText(passenger.name, 26)} {!passenger.is_friend && "(EU)"}
                 </Text>
-                <Text style={styles.passengerPhone}>{passenger.phone}</Text>
+                <Text style={styles.passengerPhone}>{maskPhone(passenger.phone_number)}</Text>
               </View>
             ),
           },

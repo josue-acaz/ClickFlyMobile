@@ -1,91 +1,106 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView} from 'react-native';
-import {
-  Screen,
-  ArrowBack,
-  SubsectionTitle,
-  Input,
-  Form,
-  Label,
-  BottomAction,
-  Button,
-  Alert,
-  BottomSpace,
-} from '../../components';
+
+import Screen from '../../components/Screen';
+import ArrowBack from '../../components/ArrowBack';
+import SubsectionTitle from '../../components/SubsectionTitle';
+import Input from '../../components/Input';
+import Form from '../../components/Form';
+import Label from '../../components/Label';
+import BottomAction from '../../components/BottomAction';
+import Button from '../../components/Button';
+import Alert from '../../components/Alert';
+import BottomSpace from '../../components/BottomSpace';
+import Loader from '../../components/Loader';
+
 import {consultZipcode} from '../../services/extra';
-import {maskCep, rmEspecialCaracteres} from '../../utils';
+import {maskCep, escapeCaracteres} from '../../utils';
 import api from '../../services/api';
 
 export default function Address({navigation, route}) {
-  const {customer, returnRoute} = route.params;
+  const {id, returnRoute} = route.params;
+  const edit = id !== "0";
+  const [loading, setLoading] = useState(edit);
   const [submitted, setSubmitted] = useState(false);
+
   const [inputs, setInputs] = useState({
-    street: '',
-    number: '',
-    complement: '',
-    zipcode: '',
-    neighborhood: '',
-    city: '',
-    uf: '',
+    name: "",
+    street: "",
+    number: "",
+    zipcode: "",
+    complement: "",
+    neighborhood: "",
+    city: "",
+    uf: "",
   });
-  function handleChange(e) {
-    const {name, value} = e;
+
+  function handleChange({name, value}) {
     setInputs((inputs) => ({...inputs, [name]: value}));
   }
-  const [alert, setAlert] = useState({
+
+  const [open, setOpen] = useState({
     open: false,
-    processing: false,
     error: false,
     success: false,
+    processing: false,
   });
-  function handleAlert(e) {
-    const {name, value} = e;
-    setAlert((alert) => ({...alert, [name]: value}));
+
+  function handleOpen(name) {
+    setOpen((open) => ({...open, [name]: true}));
+  }
+
+  function handleClose(name) {
+    setOpen((open) => ({...open, [name]: false}));
   }
 
   useEffect(() => {
-    if (customer.address) {
-      const address = customer.address;
-      console.log(address);
-      Object.keys(address).forEach((el) => {
-        handleChange({name: el, value: address[el]});
-      });
+    async function show(id) {
+      try {
+        const response = await api.get(`/customer-addresses/${id}/show`);
+        const address = response.data;
+
+        Object.keys(address).forEach(key => {
+          const value = address[key];
+          handleChange({name: key, value});
+        });
+
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
+      }
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if(edit) {
+      show(id);
+    }
   }, []);
 
-  async function handleConsultZip(zipcode) {
+  async function consultZip(zipcode) {
     try {
-      const {bairro, localidade, logradouro, uf} = await consultZipcode(
-        zipcode,
-      );
-      const autocompleteAddress = [
+      const {bairro, localidade, logradouro, uf} = await consultZipcode(zipcode);
+
+      const autocomplete_address = [
         {
-          id: 1,
-          name: 'neighborhood',
+          name: "neighborhood",
           value: bairro,
         },
         {
-          id: 2,
-          name: 'city',
+          name: "city",
           value: localidade,
         },
         {
-          id: 3,
-          name: 'street',
+          name: "street",
           value: logradouro,
         },
         {
-          id: 4,
-          name: 'uf',
+          name: "uf",
           value: uf,
         },
       ];
 
-      autocompleteAddress.forEach((addr) => {
-        const {name, value} = addr;
-        handleChange({name, value});
+      autocomplete_address.forEach((addr) => {
+        handleChange({name: addr.name, value: addr.value});
       });
     } catch (error) {
       // handle error
@@ -95,6 +110,7 @@ export default function Address({navigation, route}) {
   function handleSubmit() {
     setSubmitted(true);
     if (
+      inputs.name &&
       inputs.street &&
       inputs.number &&
       inputs.neighborhood &&
@@ -102,34 +118,44 @@ export default function Address({navigation, route}) {
       inputs.zipcode &&
       inputs.city
     ) {
-      handleAlert({name: 'open', value: true});
+      handleOpen("open");
     }
   }
 
-  async function handleUpdate() {
-    handleAlert({name: 'processing', value: true});
+  async function handleEdit(id) {
+    handleOpen("processing");
+
     const data = {
+      name: inputs.name,
+      uf: inputs.uf,
+      city: inputs.city,
       street: inputs.street,
       number: inputs.number,
-      zipcode: rmEspecialCaracteres(inputs.zipcode),
+      zipcode: escapeCaracteres(inputs.zipcode),
       neighborhood: inputs.neighborhood,
-      city: inputs.city,
-      uf: inputs.uf,
       complement: inputs.complement,
     };
 
     try {
-      await api.put(`/customer/${customer.id}/address`, data);
-      handleAlert({name: 'processing', value: false});
-      handleAlert({name: 'success', value: true});
+      const response = edit 
+      ? await api.put(`/customer-addresses/${id}/update`, data) 
+      : await api.post(`/customer-addresses`, data);
+
+      handleClose("processing");
+      handleOpen("success");
+
+      if(!edit) {
+        handleClose("open");
+        navigation.navigate(returnRoute, {loading: true});
+      }
     } catch (error) {
-      handleAlert({name: 'processing', value: false});
-      handleAlert({name: 'error', value: true});
+      handleClose("processing");
+      handleOpen("error");
     }
   }
 
   function handleFinish() {
-    handleAlert({name: 'open', value: false});
+    handleClose("open");
     navigation.navigate(returnRoute, {loading: true});
   }
 
@@ -137,110 +163,121 @@ export default function Address({navigation, route}) {
     <>
       <Screen>
         <Alert
-          open={alert.open}
-          title="Atualizar endereço"
-          message="Deseja alterar seu endereço?"
-          onConfirm={handleUpdate}
-          onCancel={() => {
-            handleAlert({name: 'open', value: false});
-          }}
-          processing={alert.processing}
-          processingTitle="Atualizando..."
+          open={open.open}
+          title="Salvar endereço"
+          message={edit ? "Atualizar dados?" : "Adicionar endereço?"}
+          onConfirm={() => handleEdit(id)}
+          onCancel={() => {handleClose("open")}}
+          processing={open.processing}
+          processingTitle="Efetuando alterações..."
           processingMessage="Por favor, aguarde!"
-          error={alert.error}
-          errorTitle="Erro"
+          error={open.error}
+          errorTitle="Ocorreu um erro."
           errorMessage="Desculpe, não foi possível atualizar o endereço!"
-          success={alert.success}
+          success={open.success}
           successTitle="Endereço atualizado"
           successMessage="O endereço foi atualizado com sucesso!"
           onOk={handleFinish}
         />
-        <ScrollView>
-          <ArrowBack
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-          <SubsectionTitle text="Meu endereço" />
-          <Form>
-            <Label text="CEP*" />
-            <Input
-              value={inputs.zipcode}
-              placeholder="Informe seu CEP"
-              error={submitted && !inputs.zipcode}
-              keyboardType="numeric"
-              onBlur={() => {
-                handleConsultZip(inputs.zipcode);
-              }}
-              onChangeText={(text) => {
-                if (text.length <= 9 || text === '') {
-                  handleChange({name: 'zipcode', value: maskCep(text)});
-                }
+        {loading ? <Loader /> : (
+          <ScrollView>
+            <ArrowBack
+              onPress={() => {
+                navigation.goBack();
               }}
             />
-            <Label text="Nome da rua*" />
-            <Input
-              value={inputs.street}
-              placeholder="Nome da rua"
-              error={submitted && !inputs.street}
-              onChangeText={(text) => {
-                handleChange({name: 'street', value: text});
-              }}
-            />
-            <Label text="Número da residência*" />
-            <Input
-              value={inputs.number}
-              placeholder="Número da residência"
-              error={submitted && !inputs.number}
-              keyboardType="numeric"
-              onChangeText={(text) => {
-                handleChange({name: 'number', value: text});
-              }}
-            />
-            <Label text="Bairro*" />
-            <Input
-              value={inputs.neighborhood}
-              placeholder="Bairro"
-              error={submitted && !inputs.neighborhood}
-              onChangeText={(text) => {
-                handleChange({name: 'neighborhood', value: text});
-              }}
-            />
-            <Label text="Cidade*" />
-            <Input
-              value={inputs.city}
-              placeholder="Cidade"
-              error={submitted && !inputs.city}
-              onChangeText={(text) => {
-                handleChange({name: 'city', value: text});
-              }}
-            />
-            <Label text="Estado*" />
-            <Input
-              value={inputs.uf}
-              placeholder="UF"
-              error={submitted && !inputs.uf}
-              onChangeText={(text) => {
-                if (text.length <= 2 || text === '') {
-                  handleChange({name: 'uf', value: text.toUpperCase()});
-                }
-              }}
-            />
-            <Label text="Complemento" />
-            <Input
-              value={inputs.complement}
-              placeholder="Complemento"
-              onChangeText={(text) => {
-                handleChange({name: 'complement', value: text});
-              }}
-            />
-          </Form>
-          <BottomSpace />
-        </ScrollView>
+            <SubsectionTitle text="Meu endereço" />
+            <Form>
+              <Label text="Nome do endereço" />
+              <Input
+                value={inputs.name}
+                placeholder="Ex.: Minha casa"
+                error={submitted && !inputs.name}
+                onChangeText={(text) => {
+                  handleChange({name: "name", value: text});
+                }}
+              />
+              <Label text="CEP*" />
+              <Input
+                value={inputs.zipcode}
+                placeholder="Informe seu CEP"
+                error={submitted && !inputs.zipcode}
+                keyboardType="numeric"
+                onBlur={() => {
+                  consultZip(inputs.zipcode);
+                }}
+                onChangeText={(text) => {
+                  if (text.length <= 9 || text === "") {
+                    handleChange({name: "zipcode", value: maskCep(text)});
+                  }
+                }}
+              />
+              <Label text="Nome da rua*" />
+              <Input
+                value={inputs.street}
+                placeholder="Nome da rua"
+                error={submitted && !inputs.street}
+                onChangeText={(text) => {
+                  handleChange({name: "street", value: text});
+                }}
+              />
+              <Label text="Número da residência*" />
+              <Input
+                value={inputs.number}
+                placeholder="Número da residência"
+                error={submitted && !inputs.number}
+                keyboardType="numeric"
+                onChangeText={(text) => {
+                  handleChange({name: "number", value: text});
+                }}
+              />
+              <Label text="Bairro*" />
+              <Input
+                value={inputs.neighborhood}
+                placeholder="Bairro"
+                onChangeText={(text) => {
+                  handleChange({name: "neighborhood", value: text});
+                }}
+                error={submitted && !inputs.neighborhood}
+              />
+              <Label text="Cidade*" />
+              <Input
+                value={inputs.city}
+                placeholder="Cidade"
+                onChangeText={(text) => {
+                  handleChange({name: "city", value: text});
+                }}
+                error={submitted && !inputs.city}
+              />
+              <Label text="Estado*" />
+              <Input
+                value={inputs.uf}
+                placeholder="UF"
+                error={submitted && !inputs.uf}
+                onChangeText={(text) => {
+                  if (text.length <= 2 || text === "") {
+                    handleChange({name: "uf", value: text.toUpperCase()});
+                  }
+                }}
+              />
+              <Label text="Complemento" />
+              <Input
+                value={inputs.complement}
+                placeholder="Complemento"
+                onChangeText={(text) => {
+                  handleChange({name: "complement", value: text});
+                }}
+              />
+            </Form>
+            <BottomSpace />
+          </ScrollView>
+        )}
       </Screen>
-      <BottomAction>
-        <Button text="Alterar" onPress={handleSubmit} />
-      </BottomAction>
+      {!loading && (
+        <BottomAction>
+          <Button text="Alterar" onPress={handleSubmit} />
+        </BottomAction>
+      )}
     </>
   );
 }

@@ -38,6 +38,7 @@ const AuthProvider = ({children}) => {
       setUser(response.user);
 
       api.defaults.headers.Authorization = `Baerer ${response.token}`;
+      api.defaults.headers.customer_id = response.user.id;
 
       await AsyncStorage.setItem('@RNAuth:user', JSON.stringify(response.user));
       await AsyncStorage.setItem('@RNAuth:token', response.token);

@@ -7,15 +7,13 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import {
-  BottomOverlay,
-  Inline,
-  VerticalSpaceBetween,
-  SlimButton,
-  CardItem,
-  Bootstrap,
-  Checkbox,
-} from '../../components';
+import Checkbox from '../../components/Checkbox';
+import BottomOverlay from '../../components/BottomOverlay';
+import Inline from '../../components/Inline';
+import Bootstrap from '../../components/Bootstrap';
+import SlimButton from '../../components/SlimButton';
+import CardItem from '../../components/CardItem';
+import VerticalSpaceBetween from '../../components/VerticalSpaceBetween';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const ArrowIcon = () => (
@@ -30,7 +28,7 @@ export default function CardSelect({
   handleCardSelect,
   onAddPayment,
   onChangeMethod,
-  method = 'credit',
+  method = "credit",
 }) {
   const [visible, setVisible] = useState(false);
   function handleVisible() {
@@ -117,9 +115,9 @@ export default function CardSelect({
           <View style={styles.separator} />
           <View style={styles.cards}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              {cards.map((card) => (
+              {cards.map((card, index) => (
                 <CardItem
-                  key={card.id}
+                  key={index}
                   card={card}
                   onPress={() => {
                     handleVisible();

@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {VerticalSpaceBetween} from '../../components';
+import VerticalSpaceBetween from '../../components/VerticalSpaceBetween';
 
 const HelpIcon = () => (
   <Ionicons name="ios-help-circle-outline" size={24} color="#666666" />

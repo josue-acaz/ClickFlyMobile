@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {getLegRoute, getDatetime, currency} from '../../utils';
-import {Inline} from '../../components';
+import Inline from '../../components/Inline';
 import {useNavigation} from '@react-navigation/native';
 
 const ArrowIcon = () => (
@@ -71,7 +71,8 @@ export default function FlightList({legs}) {
 
   return (
     <View style={styles.leg}>
-      <Text style={styles.title}>{`${origin.city} • ${destination.city}`}</Text>
+      <Text style={styles.origin}>Saindo de {origin.city}</Text>
+      <Text style={styles.destination}>Para {destination.city}</Text>
       <View style={styles.list}>
         <FlatList
           data={empty_legs}
@@ -91,7 +92,7 @@ export default function FlightList({legs}) {
                 onPress={() => handleShowFlight(item)}>
                 <Image
                   style={styles.thumbnail}
-                  source={{uri: aircraft.thumbnail}}
+                  source={{uri: aircraft.thumbnail.url}}
                 />
                 <View style={styles.content}>
                   <Text style={styles.departureDate}>
@@ -119,10 +120,14 @@ const styles = StyleSheet.create({
   leg: {
     marginTop: 15,
   },
-  title: {
+  origin: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#444444',
+  },
+  destination: {
+    fontSize: 18,
+    color: '#666666',
   },
   list: {
     marginTop: 10,
