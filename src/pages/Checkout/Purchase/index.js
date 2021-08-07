@@ -72,7 +72,11 @@ export default function Purchase({navigation, route}) {
     setLoading(true);
     async function index() {
       try {
-        const response = await api.get(`/customer-cards`);
+        const response = await api.get(`/customer-cards`, {
+          headers: {
+            customer_id: customer.id
+          }
+        });
         const cards = response.data;
         setCustomerCards(cards);
         setCardSelected(cards[cards.length - 1]); // Pega o último cartão

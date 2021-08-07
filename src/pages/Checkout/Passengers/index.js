@@ -58,6 +58,9 @@ export default function Passengers({navigation, route}) {
             offset: 0,
             order: "DESC",
             order_by: "created_at"
+          },
+          headers: {
+            customer_id: customer.id
           }
         });
         

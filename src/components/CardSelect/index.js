@@ -20,7 +20,7 @@ const ArrowIcon = () => (
   <MaterialIcons name="arrow-drop-down" size={30} color="#333" />
 );
 
-const {height} = Dimensions.get('screen');
+const {height} = Dimensions.get("screen");
 const {Row, Col} = Bootstrap;
 export default function CardSelect({
   cards,
@@ -28,7 +28,7 @@ export default function CardSelect({
   handleCardSelect,
   onAddPayment,
   onChangeMethod,
-  method = "credit",
+  method = "credit_card",
 }) {
   const [visible, setVisible] = useState(false);
   function handleVisible() {
@@ -87,7 +87,7 @@ export default function CardSelect({
                     id: 1,
                     component: (
                       <Checkbox
-                        checked={method === 'debit'}
+                        checked={method === "debit_card"}
                         onPress={onChangeMethod}
                       />
                     ),

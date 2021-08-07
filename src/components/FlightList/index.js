@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {getLegRoute, getDatetime, currency} from '../../utils';
+import {getDatetime, currency} from '../../utils';
 import Inline from '../../components/Inline';
 import {useNavigation} from '@react-navigation/native';
 
@@ -60,22 +60,21 @@ function getRouteLabel(Icon, route) {
   );
 }
 
-export default function FlightList({legs}) {
+export default function FlightList({data}) {
   const navigation = useNavigation();
-  const {group, empty_legs} = legs;
-  const {origin, destination} = getLegRoute(group);
+  const {origin_city, destination_city, flights} = data;
 
   function handleShowFlight(flight) {
-    navigation.navigate('FlightDetails', {flight});
+    navigation.navigate("FlightDetails", {flight});
   }
 
   return (
     <View style={styles.leg}>
-      <Text style={styles.origin}>Saindo de {origin.city}</Text>
-      <Text style={styles.destination}>Para {destination.city}</Text>
+      <Text style={styles.origin}>Saindo de {origin_city.name}</Text>
+      <Text style={styles.destination}>Para {destination_city.name}</Text>
       <View style={styles.list}>
         <FlatList
-          data={empty_legs}
+          data={flights}
           horizontal
           style={styles.flatlist}
           showsHorizontalScrollIndicator={false}
@@ -85,7 +84,7 @@ export default function FlightList({legs}) {
             return (
               <TouchableOpacity
                 style={
-                  index === empty_legs.length - 1
+                  index === flights.length - 1
                     ? {...styles.item, ...styles.removeMarginRight}
                     : styles.item
                 }
@@ -101,7 +100,7 @@ export default function FlightList({legs}) {
                   {getRouteLabel(ArrowIcon, {
                     originAerodromePrefix: origin_aerodrome.oaci_code,
                     destinationAerodromePrefix: destination_aerodrome.oaci_code,
-                    availableSeats: item.available_seats,
+                    availableSeats: 2,
                   })}
                   <Text style={styles.price}>
                     R$ {currency(item.price_per_seat)} por assento

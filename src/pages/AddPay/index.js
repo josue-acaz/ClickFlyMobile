@@ -185,7 +185,7 @@ export default function AddPay({navigation, route}) {
                 <Label text="Validade" />
                 <Input
                   value={inputs.expires}
-                  placeholder="MM/AA"
+                  placeholder="MM/AAAA"
                   keyboardType="numeric"
                   onChangeText={(text) => {
                     if (text.length <= 5 || text === '') {

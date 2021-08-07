@@ -9,7 +9,6 @@ import DiscoverAircraft from '../../../components/DiscoverAircraft';
 
 export default function Airplane({navigation, route}) {
   const {aircraft} = route.params;
-  console.log({aircraft});
   function handleDiscover() {
     navigation.navigate("Discover", {images: aircraft.images});
   }

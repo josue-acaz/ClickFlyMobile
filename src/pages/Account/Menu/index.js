@@ -112,7 +112,7 @@ export default function Menu({navigation, route}) {
                     key={index}
                     bottomDivider
                     onPress={() => {
-                      if (item.id === 5) {
+                      if (item.title === "Sair") {
                         signOut();
                       } else {
                         navigation.navigate(item.route, {

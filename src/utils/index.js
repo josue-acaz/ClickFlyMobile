@@ -162,22 +162,6 @@ export function getFormattedCustomerType(type) {
   return type.replace('-', '_');
 }
 
-// Retorna um array com a cidade e o estado de um grupo de um voo
-export function getLegRoute(group) {
-  const origin = group.split(',')[0].split('-');
-  const destination = group.split(',')[1].split('-');
-  return {
-    origin: {
-      city: origin[0],
-      uf: origin[1],
-    },
-    destination: {
-      city: destination[0],
-      uf: destination[1],
-    },
-  };
-}
-
 export function getDatetime(date) {
   const datetime = parseISO(date);
   const formattedDatetime = format(datetime, "dd 'de' MMMM', às ' HH:mm", {

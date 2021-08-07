@@ -16,7 +16,7 @@ export default function EmptyLegs({navigation, route}) {
   useEffect(() => {
     async function index() {
       try {
-        const response = await api.get('/shared-flights');
+        const response = await api.get("/find-flights");
         setFlights(response.data);
         setLoading(false);
       } catch (err) {
@@ -38,7 +38,7 @@ export default function EmptyLegs({navigation, route}) {
           <Subtitle text="Encontre a sua próxima viagem a um preço acessível" />
           <View style={styles.flightList}>
             {flights.map((flight) => (
-              <FlightList key={flight.id} legs={flight} />
+              <FlightList key={flight.id} data={flight} />
             ))}
           </View>
         </ScrollView>
